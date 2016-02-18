@@ -1,0 +1,17 @@
+web:
+  build: .
+  links:
+    - mysql
+  volumes:
+    - .:/var/www/wordpress
+  ports:
+    - "80:80"
+mysql:
+  image: mysql:5.7
+  environment:
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_DATABASE=wordpress
+  volumes:
+    - ./mysql:/var/lib/mysql:rw
+  ports:
+    - "3306:3306"

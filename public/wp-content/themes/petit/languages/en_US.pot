@@ -1,0 +1,689 @@
+# Loco Gettext template
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Petit v1.0.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"POT-Revision-Date: Tue Dec 09 2014 19:02:32 GMT+0200 (EET)\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: demoadmin <cioricip@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Loco - https://localise.biz/\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
+"__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
+"_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
+"esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
+"esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: ../404.php:9
+msgid "Error 404 - Nothing Found"
+msgstr ""
+
+#: ../404.php:10 ../loop.php:40 ../page.php:11 ../single.php:55 ../template-
+#: archives.php:16 ../template-full-width.php:16
+msgid "Edit"
+msgstr ""
+
+#: ../404.php:16
+msgid ""
+"The page you are looking for could not be found. Maybe try one of the links "
+"below?"
+msgstr ""
+
+#: ../404.php:19 ../template-archives.php:24
+msgid "Popular Categories:"
+msgstr ""
+
+#: ../404.php:29 ../template-archives.php:34
+msgid "Archives:"
+msgstr ""
+
+#: ../404.php:39 ../template-archives.php:44
+msgid "Tags:"
+msgstr ""
+
+#: ../archive.php:15
+msgid "Post Tagged with:"
+msgstr ""
+
+#: ../archive.php:16 ../archive.php:17 ../archive.php:18
+msgid "Archive for"
+msgstr ""
+
+#: ../archive.php:19
+msgid " Articles by: "
+msgstr ""
+
+#: ../archive.php:20
+msgid "Archives"
+msgstr ""
+
+#: ../archive.php:21
+msgid "Recent Posts"
+msgstr ""
+
+#: ../comments.php:3
+msgid "This post is password protected. Enter the password to view any comments."
+msgstr ""
+
+#: ../comments.php:19
+msgid "No Comments"
+msgstr ""
+
+#: ../comments.php:19
+msgid "One Comment"
+msgstr ""
+
+#: ../comments.php:19
+msgid "% Comments"
+msgstr ""
+
+#: ../comments.php:23 ../comments.php:41
+msgid "<span class=\"meta-nav\">&larr;</span> Older Comments"
+msgstr ""
+
+#: ../comments.php:23 ../comments.php:41
+msgid "Newer Comments <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: ../comments.php:53
+msgid "Comments are closed."
+msgstr ""
+
+#: ../comments.php:67
+msgid "Name"
+msgstr ""
+
+#: ../comments.php:72
+msgid "Email"
+msgstr ""
+
+#: ../comments.php:77
+msgid "Website"
+msgstr ""
+
+#: ../comments.php:82
+#, php-format
+msgid "Logged in as <a href=\"%1$s\">%2$s</a>. <a href=\"%3$s\">Log out?</a>"
+msgstr ""
+
+#: ../comments.php:83
+msgid "Leave a Reply"
+msgstr ""
+
+#: ../comments.php:84
+msgid "Cancel"
+msgstr ""
+
+#: ../comments.php:85
+msgid "Submit Comment"
+msgstr ""
+
+#: ../footer.php:37
+msgid "Copyright"
+msgstr ""
+
+#: ../footer.php:37
+msgid "All Rights Reserved"
+msgstr ""
+
+#: ../footer.php:38
+msgid "Designed by"
+msgstr ""
+
+#: ../footer.php:38 ../functions/wpzoom/wpzoom.php:172
+msgid "WPZOOM"
+msgstr ""
+
+#: ../header.php:43
+msgid "Open menu"
+msgstr ""
+
+#: ../image.php:21
+msgid "View full size"
+msgstr ""
+
+#: ../image.php:33
+msgid "&larr; Previous picture"
+msgstr ""
+
+#: ../image.php:34
+msgid "Next picture &rarr;"
+msgstr ""
+
+#: ../loop.php:26
+msgid "Author"
+msgstr ""
+
+#: ../loop.php:27 ../single.php:50
+msgid "Posted"
+msgstr ""
+
+#: ../loop.php:35
+msgid "Read more"
+msgstr ""
+
+#: ../loop.php:39 ../wpzoom-slider.php:25
+msgid "View Recipe"
+msgstr ""
+
+#: ../loop.php:39
+msgid "Read More"
+msgstr ""
+
+#: ../page.php:17 ../single.php:64 ../template-full-width.php:22
+msgid "Pages"
+msgstr ""
+
+#: ../page.php:22 ../single.php:79 ../template-full-width.php:27
+msgid "Sorry, no posts matched your criteria"
+msgstr ""
+
+#: ../pagination.php:11
+msgid "&larr;  Newer"
+msgstr ""
+
+#: ../pagination.php:12
+msgid "Older  &rarr;"
+msgstr ""
+
+#: ../related-posts.php:23
+msgid "Similar Recipes"
+msgstr ""
+
+#: ../related-posts.php:24
+msgid "Related Posts"
+msgstr ""
+
+#: ../related-posts.php:39
+#, php-format
+msgid "Permalink to %s"
+msgstr ""
+
+#: ../search.php:9
+msgid "Search Results for"
+msgstr ""
+
+#: ../search.php:18
+msgid "Sorry, no posts matched your criteria:"
+msgstr ""
+
+#: ../searchform.php:3 ../searchform.php:3 ../searchform.php:3 ../searchform.php:4
+msgid "Search"
+msgstr ""
+
+#: ../sidebar.php:9
+msgid "Rate"
+msgstr ""
+
+#: ../single.php:51
+msgid " on "
+msgstr ""
+
+#: ../single.php:52
+msgid " by "
+msgstr ""
+
+#: ../single.php:53
+msgid " in "
+msgstr ""
+
+#: ../functions/theme/functions.php:162
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: ../functions/theme/functions.php:168
+#, php-format
+msgid "%s <span class=\"says\">says:</span>"
+msgstr ""
+
+#: ../functions/theme/functions.php:171
+#, php-format
+msgid "%s at %s"
+msgstr ""
+
+#: ../functions/theme/functions.php:171 ../functions/theme/functions.php:191
+msgid "(Edit)"
+msgstr ""
+
+#: ../functions/theme/functions.php:191
+msgid "Pingback:"
+msgstr ""
+
+#: ../functions/theme/functions.php:238
+msgid "Ingredients"
+msgstr ""
+
+#: ../functions/theme/functions.php:247
+msgid "Directions"
+msgstr ""
+
+#: ../functions/theme/functions.php:286
+msgid "WPZOOM Recipe Ingredients Shortcode"
+msgstr ""
+
+#: ../functions/theme/functions.php:287
+msgid "WPZOOM Recipe Directions Shortcode"
+msgstr ""
+
+#: ../functions/theme/functions.php:288
+msgid "Place your list items here"
+msgstr ""
+
+#: ../functions/theme/functions.php:303
+msgid "Bookmark"
+msgstr ""
+
+#: ../functions/theme/functions.php:305
+msgid "Unbookmark"
+msgstr ""
+
+#: ../functions/theme/post-options.php:119
+msgid "This Post is a Recipe"
+msgstr ""
+
+#: ../functions/theme/post-options.php:126
+msgid "Feature on Homepage"
+msgstr ""
+
+#: ../functions/theme/post-options.php:133
+msgid "Feature in Homepage Carousel"
+msgstr ""
+
+#: ../functions/theme/widgets/facebook-like-box.php:117
+msgid "Show Faces"
+msgstr ""
+
+#: ../functions/theme/widgets/facebook-like-box.php:120
+msgid "Show Stream"
+msgstr ""
+
+#: ../functions/theme/widgets/facebook-like-box.php:123
+msgid "Show Header"
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:50
+msgid "Please set the Number of images to show within the widget"
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:70
+msgid "The user currently does not have any images..."
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:109
+msgid "Title:"
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:114
+msgid "User ID (not username):"
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:119
+msgid "Access Token:"
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:127
+msgid "Number of Images:"
+msgstr ""
+
+#: ../functions/theme/widgets/instagram.php:139
+msgid "Link images to full image"
+msgstr ""
+
+#: ../functions/theme/widgets/social.php:12
+msgid "Custom WPZOOM Widget that displays links to social sharing websites."
+msgstr ""
+
+#: ../functions/theme/widgets/social.php:18
+msgid "WPZOOM: Social Widget"
+msgstr ""
+
+#: ../functions/theme/widgets/social.php:87
+msgid "Widget Title:"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:39 ..
+#: /functions/theme/widgets/tabbed-login.php:80
+msgid "Login"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:41
+msgid "Register"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:43
+msgid "Forgot"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:50 ..
+#: /functions/theme/widgets/tabbed-login.php:55
+msgid "Success!"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:51
+msgid "Check your email for the password and then return to log in."
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:56
+msgid "Check your email to reset your password."
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:60
+msgid "Have an account?"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:66 ..
+#: /functions/theme/widgets/tabbed-login.php:94
+msgid "Username"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:70
+msgid "Password"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:76
+msgid " Remember me"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:90
+msgid "Register for this site!"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:91
+msgid "Sign up now for the good stuff."
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:98
+msgid "Your Email"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:103
+msgid "Sign up!"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:114
+msgid "Lost Your Password?"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:115
+msgid "Enter your username or email to reset your password."
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:118
+msgid "Username or Email"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:123
+msgid "Reset my password"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:124
+msgid "A message was sent to your email address."
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:135
+msgid "Welcome, "
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:146
+msgid "You are logged in as "
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:148
+msgid "Log out"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:150
+msgid "Admin"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:151
+msgid "Profile"
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:169
+msgid "No option available for this widget."
+msgstr ""
+
+#: ../functions/theme/widgets/tabbed-login.php:170
+msgid "Note : Do not put the same widget twice in a page."
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:106
+msgid "Title"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:111
+msgid "Twitter Username"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:116
+msgid "Show"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:117
+msgid "tweets"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:122
+msgid "Hide Timestamp"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:127
+msgid "Hide Tweet URL"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:132
+msgid "Display Follow me button"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:137
+msgid "Hide follower count?"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:147
+msgid "Consumer key"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:152
+msgid "Consumer secret"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:157
+msgid "Access token"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:162
+msgid "Access token secret"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:221
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#: ../functions/theme/widgets/twitter.php:226 ../functions/theme/widgets/twitter.
+#: php:228
+#, php-format
+msgid "%s"
+msgstr ""
+
+#: ../functions/wpzoom/wpzoom.php:173
+msgid "Theme Options"
+msgstr ""
+
+#: ../functions/wpzoom/wpzoom.php:176
+msgid "Framework Update"
+msgstr ""
+
+#: ../functions/wpzoom/components/medialib-uploader.php:15
+msgid "WPZOOM Exporter"
+msgstr ""
+
+#: ../functions/wpzoom/components/medialib-uploader.php:38
+msgid "Upload"
+msgstr ""
+
+#: ../functions/wpzoom/components/medialib-uploader.php:40
+msgid "Upgrade your version of WordPress for full media support."
+msgstr ""
+
+#: ../functions/wpzoom/components/medialib-uploader.php:60
+msgid "View File"
+msgstr ""
+
+#: ../functions/wpzoom/components/video-thumb.php:86
+msgid ""
+"<strong>NOTICE!&nbsp;&nbsp;Unable to fetch video "
+"thumbnail</strong><br/>Either an invalid embed code was provided, or there "
+"is no thumbnail available for the specified video&hellip;<br/><small "
+"id=\"wpz_autothumb_remind\"><strong>REMINDER:</strong> You can always manually "
+"upload a featured image via the WordPress Media Uploader.</small>"
+msgstr ""
+
+#: ../functions/wpzoom/components/admin/settings-page.php:132
+msgid "For more information:"
+msgstr ""
+
+#: ../functions/wpzoom/components/admin/settings-page.php:133
+msgid ""
+"<a href=\"http://www.wpzoom.com/support/documentation\" "
+"target=\"_blank\">Documentation and Tutorials</a>"
+msgstr ""
+
+#: ../functions/wpzoom/components/admin/settings-page.php:134
+msgid "<a href=\"http://www.wpzoom.com/support/\" target=\"_blank\">Support Desk</a>"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:69 ..
+#: /functions/wpzoom/components/portfolio/portfolio.php:81
+msgid "Portfolio Items"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:70 ..
+#: /functions/wpzoom/components/portfolio/portfolio.php:72
+msgid "Portfolio Item"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:71 ..
+#: /functions/wpzoom/components/portfolio/portfolio.php:84 ..
+#: /functions/wpzoom/components/portfolio/portfolio.php:121 ..
+#: /functions/wpzoom/components/portfolio/portfolio.php:123
+msgid "Portfolio"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:73
+msgid "Add New"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:74
+msgid "Add New Portfolio Item"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:75
+msgid "Edit Portfolio Item"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:76
+msgid "New Portfolio Item"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:77
+msgid "View Portfolio Item"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:78
+msgid "Search Portfolio"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:79
+msgid "No portfolio items found"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:80
+msgid "No portfolio items found in trash"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:120 ..
+#: /functions/wpzoom/components/portfolio/portfolio.php:122
+msgid "Portfolios"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:124
+msgid "Search Portfolios"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:125
+msgid "Popular Portfolios"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:126
+msgid "All Portfolios"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:127
+msgid "Edit Portfolio"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:128
+msgid "View Portfolio"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:129
+msgid "Update Portfolio"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:130
+msgid "Add New Portfolio"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:131
+msgid "New Portfolio Name"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:132
+msgid "Separate portfolios with commas"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:133
+msgid "Add or remove portfolios"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/portfolio.php:134
+msgid "Choose from the most used portfolios"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/walker-category-filter.php:13
+#, php-format
+msgid "View all posts filed under %s"
+msgstr ""
+
+#: ../functions/wpzoom/components/portfolio/walker-category-filter.php:29
+#, php-format
+msgid "Feed for all posts filed under %s"
+msgstr ""
+
+#: ../functions/wpzoom/components/shortcodes/dialog.php:31
+msgid "Customize the Shortcode"
+msgstr ""
+
+#: ../functions/wpzoom/components/shortcodes/dialog.php:40
+msgid "Preview"
+msgstr ""
+
+#: ../functions/wpzoom/components/shortcodes/dialog.php:54
+msgid "Your version of theme does not yet support shortcodes."
+msgstr ""

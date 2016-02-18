@@ -1,0 +1,57 @@
+Petit Theme
+http://www.wpzoom.com/themes/petit
+
+CHANGELOG
+---------
+
+v 1.0.5 (June 10, 2015)
+
+    - Facebook, Instagram, Twitter, Social widgets removed in favor of our new free plugins: http://www.wpzoom.com/plugins/
+    - Added Support for new "title-tag" WordPress 4.2 feature.
+    - modified files:
+        - /functions/theme/functions.php
+        - functions.php
+        - header.php
+        - style.css
+
+
+v 1.0.4 (June 14, 2013)
+
+	- Fixed Twitter Widget (added compatibility with API version 1.1)
+	- modified files:
+		- /functions/theme/widgets/twitter.php
+
+	- added files:
+		- /functions/theme/widgets/twitteroauth/OAuth.php
+		- /functions/theme/widgets/twitteroauth/twitterauth.php
+
+
+v 1.0.3 - June 12, 2013
+
+	- Fixed several localization bugs
+	- modified files:
+		/functions/theme/functions.php
+		/languages/en_US.po
+		loop.php
+
+
+v 1.0.2 - April 24, 2013
+
+	- Bug fixes with image from the top in individual post pages in Internet Explorer
+	- modified files:
+		/functions/theme/functions.php
+		single.php
+
+
+v 1.0.1 - March 24, 2013
+
+	- Added partial support for Recipes Rich Snippets (hRecipe microformat). For full support use a different rating plugin, like GD Star Rating
+	- modified files:
+		/functions/theme/assets/js/recipe_button.js
+		/functions/theme/functions.php
+		single.php
+
+
+v 1.0  - January 10, 2013
+
+	- initial release
