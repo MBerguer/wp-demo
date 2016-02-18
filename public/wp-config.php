@@ -62,7 +62,7 @@ define('DB_PASSWORD', 'password');
 
 define('DB_HOST', 'mysql');
 
-define('WP_ALLOW_REPAIR', true);
+
 
 /** Database Charset to use in creating database tables. */
 
