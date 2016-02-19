@@ -13,6 +13,7 @@
         this._timeline = null;
         this._isCompleted = false;
         this._isStarted = false;
+        this._isReversed = false;
 
         this.toParams = toParams;
 
@@ -65,18 +66,35 @@
 
     Animation.prototype._tick = function (delta) {
         var pr = this._progress;
-        this._progress += delta / this._duration * this._timeScale;
-        if (pr == 0 || !this._isStarted) {
-            this._onStart();
-        } else {
-            if (this._progress >= 1) {
-                this._progress = 1;
-                this._isPlaying = false;
-                N2A.RAF.removeTick(this.getTickCallback());
-                this._onUpdate();
-                this._onComplete();
+        if (!this._isReversed) {
+            this._progress += delta / this._duration * this._timeScale;
+            if (pr == 0 || !this._isStarted) {
+                this._onStart();
             } else {
-                this._onUpdate();
+                if (this._progress >= 1) {
+                    this._progress = 1;
+                    this._isPlaying = false;
+                    N2A.RAF.removeTick(this.getTickCallback());
+                    this._onUpdate();
+                    this._onComplete();
+                } else {
+                    this._onUpdate();
+                }
+            }
+        } else {
+            this._progress -= delta / this._duration * this._timeScale;
+            if (pr == 1 || !this._isStarted) {
+                this._onReverseStart();
+            } else {
+                if (this._progress <= 0) {
+                    this._progress = 0;
+                    this._isPlaying = false;
+                    N2A.RAF.removeTick(this.getTickCallback());
+                    this._onUpdate();
+                    this._onReverseComplete();
+                } else {
+                    this._onUpdate();
+                }
             }
         }
     };
@@ -98,6 +116,21 @@
         this._isCompleted = true;
         this._onUpdate();
         this.trigger('onComplete');
+    };
+
+    Animation.prototype._onReverseComplete = function () {
+        this._isCompleted = true;
+        this._isReversed = false;
+        this._onUpdate();
+        this.trigger('onReverseComplete');
+    };
+
+    Animation.prototype._onReverseStart = function () {
+        this._isStarted = true;
+        this._isPlaying = false;
+        this._isCompleted = false;
+        this.trigger('onReverseStart');
+        this._onUpdate();
     };
 
     Animation.prototype.getTickCallback = function () {
@@ -209,6 +242,12 @@
             } else {
                 this.__play();
             }
+        } else if (!this._isCompleted) {
+            if (!this._isReversed) {
+                this._onComplete();
+            } else {
+                this._onReverseComplete();
+            }
         }
     };
 
@@ -232,12 +271,22 @@
             if (1 || this._progress != progress) {
                 this._progress = progress;
                 if (!this._isPlaying) {
+                    if (!this._isStarted) {
+                        this._onStart();
+                    }
                     this._onUpdate();
                 }
             }
             return this;
         }
         return this._progress;
+    };
+
+    Animation.prototype.reverse = function () {
+        this._isReversed = true;
+        if (this.progress() != 0) {
+            this.play();
+        }
     };
 
     Animation.prototype.restart = function () {

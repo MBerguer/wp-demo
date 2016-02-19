@@ -29,6 +29,10 @@
 
     };
 
+    NextendSmartSliderBackgroundAnimationAbstract.prototype.revertEnded = function () {
+
+    };
+
     NextendSmartSliderBackgroundAnimationAbstract.prototype.placeNextImage = function () {
         this.clonedImages.nextImage = this.original.nextImage.clone().css({
             position: 'absolute',

@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'Nextend';
-    src:    url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../fonts/Nextend.eot?e06y41);
-    src:    url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../fonts/Nextend.eot?e06y41#iefix) format('embedded-opentype'),
-    url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../fonts/Nextend.ttf?e06y41) format('truetype'),
-    url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../fonts/Nextend.woff?e06y41) format('woff'),
-    url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../fonts/Nextend.svg?e06y41#Nextend) format('svg');
+    src:    url(../../../../plugins/smart-slider-3/nextend/media/fonts/Nextend.eot?j5w5a3);
+    src:    url(../../../../plugins/smart-slider-3/nextend/media/fonts/Nextend.eot?j5w5a3#iefix) format('embedded-opentype'),
+    url(../../../../plugins/smart-slider-3/nextend/media/fonts/Nextend.ttf?j5w5a3) format('truetype'),
+    url(../../../../plugins/smart-slider-3/nextend/media/fonts/Nextend.woff?j5w5a3) format('woff'),
+    url(../../../../plugins/smart-slider-3/nextend/media/fonts/Nextend.svg?j5w5a3#Nextend) format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -26,6 +26,96 @@
 
 .n2-i-slideedit:before {
     content: "\e904";
+}
+.n2-i-help:before {
+    content: "\e644";
+}
+.n2-i-v-tablet-landscape:before {
+    content: "\e63a";
+}
+.n2-i-v-mobile-landscape:before {
+    content: "\e63b";
+}
+.n2-i-v-desktop-landscape:before {
+    content: "\e63c";
+}
+.n2-i-bulk:before {
+    content: "\e634";
+}
+.n2-i-notification:before {
+    content: "\e637";
+}
+.n2-i-v-tablet:before {
+    content: "\e616";
+}
+.n2-i-v-mobile:before {
+    content: "\e617";
+}
+.n2-i-v-desktop:before {
+    content: "\e618";
+}
+.n2-i-v-all:before {
+    content: "\e619";
+}
+.n2-i-smart:before {
+    content: "\e61a";
+}
+.n2-i-slider:before {
+    content: "\e61b";
+}
+.n2-i-s-open:before {
+    content: "\e61c";
+}
+.n2-i-s-close:before {
+    content: "\e61d";
+}
+.n2-i-next:before {
+    content: "\e61e";
+}
+.n2-i-n-success:before {
+    content: "\e61f";
+}
+.n2-i-n-notice:before {
+    content: "\e620";
+}
+.n2-i-n-error:before {
+    content: "\e621";
+}
+.n2-i-n-close:before {
+    content: "\e622";
+}
+.n2-i-drag:before {
+    content: "\e623";
+}
+.n2-i-a-text:before {
+    content: "\e624";
+}
+.n2-i-a-refresh:before {
+    content: "\e625";
+}
+.n2-i-a-html:before {
+    content: "\e626";
+}
+.n2-i-a-export:before {
+    content: "\e627";
+}
+.n2-i-a-duplicate:before {
+    content: "\e628";
+}
+.n2-i-a-deletes:before {
+    content: "\e629";
+}
+.n2-i-a-delete:before {
+    content: "\e62a";
+}
+.n2-i-a-back:before {
+    content: "\e62b";
+}
+.n2-i-copy:before {
+    content: "\e907";
+}
+.n2-i-paste:before {
+    content: "\e908";
 }
 .n2-i-undo:before {
     content: "\e905";
@@ -200,90 +290,6 @@
 }
 .n2-i-center:before {
     content: "\e614";
-}
-.n2-i-help:before {
-    content: "\e644";
-}
-.n2-i-v-tablet-landscape:before {
-    content: "\e63a";
-}
-.n2-i-v-mobile-landscape:before {
-    content: "\e63b";
-}
-.n2-i-v-desktop-landscape:before {
-    content: "\e63c";
-}
-.n2-i-bulk:before {
-    content: "\e634";
-}
-.n2-i-notification:before {
-    content: "\e637";
-}
-.n2-i-v-tablet:before {
-    content: "\e616";
-}
-.n2-i-v-mobile:before {
-    content: "\e617";
-}
-.n2-i-v-desktop:before {
-    content: "\e618";
-}
-.n2-i-v-all:before {
-    content: "\e619";
-}
-.n2-i-smart:before {
-    content: "\e61a";
-}
-.n2-i-slider:before {
-    content: "\e61b";
-}
-.n2-i-s-open:before {
-    content: "\e61c";
-}
-.n2-i-s-close:before {
-    content: "\e61d";
-}
-.n2-i-next:before {
-    content: "\e61e";
-}
-.n2-i-n-success:before {
-    content: "\e61f";
-}
-.n2-i-n-notice:before {
-    content: "\e620";
-}
-.n2-i-n-error:before {
-    content: "\e621";
-}
-.n2-i-n-close:before {
-    content: "\e622";
-}
-.n2-i-drag:before {
-    content: "\e623";
-}
-.n2-i-a-text:before {
-    content: "\e624";
-}
-.n2-i-a-refresh:before {
-    content: "\e625";
-}
-.n2-i-a-html:before {
-    content: "\e626";
-}
-.n2-i-a-export:before {
-    content: "\e627";
-}
-.n2-i-a-duplicate:before {
-    content: "\e628";
-}
-.n2-i-a-deletes:before {
-    content: "\e629";
-}
-.n2-i-a-delete:before {
-    content: "\e62a";
-}
-.n2-i-a-back:before {
-    content: "\e62b";
 }
 .n2-i-up:before {
     content: "\e63e";
@@ -1356,6 +1362,7 @@ html[dir="rtl"] .n2-list li > .n2-actions {
     border: 1px solid #a3adb7;
     border-width: 0 1px 1px 0;
     min-height: 1000px;
+    width:100%;
 }
 
 .n2-sidebar-hidden .n2-content-area {
@@ -2016,6 +2023,7 @@ html[dir="rtl"] .n2-visual-editor-preview-tab {
     background: RGBA(43, 52, 63, 0.9);
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    width:100%;
 }
 
 .n2-box-border .n2-box-placeholder {
@@ -4249,6 +4257,216 @@ License: MIT
 .n2-sp-palette .n2-sp-thumb-dark.n2-sp-thumb-active .n2-sp-thumb-inner {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAMdJREFUOE+tkgsNwzAMRMugEAahEAahEAZhEAqlEAZhEAohEAYh81X2dIm8fKpEspLGvudPOsUYpxE2BIJCroJmEW9qJ+MKaBFhEMNabSy9oIcIPwrB+afvAUFoK4H0tMaQ3XtlrggDhOVVMuT4E5MMG0FBbCEYzjYT7OxLEvIHQLY2zWwQ3D+9luyOQTfKDiFD3iUIfPk8VqrKjgAiSfGFPecrg6HN6m/iBcwiDAo7WiBeawa+Kwh7tZoSCGLMqwlSAzVDhoK+6vH4G0P5wdkAAAAASUVORK5CYII=);
 }
+@charset "UTF-8";
+/*!
+ * jQuery contextMenu - Plugin for simple contextMenu handling
+ *
+ * Version: v2.1.0
+ *
+ * Authors: Björn Brala (SWIS.nl), Rodney Rehm, Addy Osmani (patches for FF)
+ * Web: http://swisnl.github.io/jQuery-contextMenu/
+ *
+ * Copyright (c) 2011-2016 SWIS BV and contributors
+ *
+ * Licensed under
+ *   MIT License http://www.opensource.org/licenses/mit-license
+ *
+ * Date: 2016-01-08T20:22:20.182Z
+ */
+
+.context-menu-icon:before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 28px;
+    font-family: 'Nextend' !important;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    color: #cedae2;
+    text-align: center;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.context-menu-hover .context-menu-icon:before {
+    color: #fff;
+}
+
+.context-menu-icon-delete:before {
+    content: "\e612";
+}
+
+.context-menu-icon-duplicate:before {
+    content: "\e611";
+}
+
+.context-menu-icon-copy:before {
+    content: "\e907";
+}
+
+.context-menu-icon-paste:before {
+    content: "\e908";
+}
+
+.context-menu-icon-in:before {
+    content: "\e641";
+}
+
+.context-menu-icon-loop:before {
+    content: "\e642";
+}
+
+.context-menu-icon-out:before {
+    content: "\e640";
+}
+
+.context-menu-icon.context-menu-hover:before {
+    color: #fff;
+}
+
+.context-menu-list {
+    position: absolute;
+    display: inline-block;
+    min-width: 100px;
+    max-width: 360px;
+    padding: 5px 0;
+    margin: 5px;
+    font-family: inherit;
+    font-size: inherit;
+    list-style-type: none;
+    background: RGBA(43, 52, 63, 1);
+    border-radius: 3px;
+}
+
+.context-menu-item {
+    position: relative;
+    padding: 0 30px;
+    line-height: 32px;
+    color: #cedae2;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin: 0;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.context-menu-separator {
+    padding: 0;
+    margin: 5px 0;
+    border-bottom: 1px solid #20272e;
+}
+
+.context-menu-html {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.context-menu-item > label > input,
+.context-menu-item > label > textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+.context-menu-item.context-menu-hover {
+    color: #fff;
+    cursor: pointer;
+    background-color: #1890d7;
+}
+
+.context-menu-item.context-menu-disabled {
+    color: #626262;
+    background-color: #fff;
+}
+
+.context-menu-item.context-menu-disabled {
+    color: #626262;
+}
+
+.context-menu-input.context-menu-hover,
+.context-menu-item.context-menu-disabled.context-menu-hover {
+    cursor: default;
+    background-color: #eee;
+}
+
+.context-menu-submenu:after {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    z-index: 1;
+    width: 0;
+    height: 0;
+    content: '';
+    border-color: transparent transparent transparent #cedae2;
+    border-style: solid;
+    border-width: 4px 0 4px 4px;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+/**
+ * Inputs
+ */
+.context-menu-item.context-menu-input {
+    padding: 5px 10px;
+}
+
+/* vertically align inside labels */
+.context-menu-input > label > * {
+    vertical-align: top;
+}
+
+/* position checkboxes and radios as icons */
+.context-menu-input > label > input[type="checkbox"],
+.context-menu-input > label > input[type="radio"] {
+    position: relative;
+    top: 3px;
+}
+
+.context-menu-input > label,
+.context-menu-input > label > input[type="text"],
+.context-menu-input > label > textarea,
+.context-menu-input > label > select {
+    display: block;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.context-menu-input > label > textarea {
+    height: 100px;
+}
+
+.context-menu-item > .context-menu-list {
+    top: 5px;
+    /* re-positioned by js */
+    right: -5px;
+    display: none;
+}
+
+.context-menu-item.context-menu-visible > .context-menu-list {
+    display: block;
+}
+
+.context-menu-accesskey {
+    text-decoration: underline;
+}
+
 .nextend-tab-tabbed {
     width: 100%;
     overflow: hidden;

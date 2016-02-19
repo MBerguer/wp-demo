@@ -21,12 +21,12 @@
 
 			<div class="inner-wrap">
 
-				<div id="logo">
+				<div id="logo" style="padding-left: 30%;  padding-right: 30%;" >
 					<?php if (!option::get('misc_logo_path')) { echo "<h1>"; } ?>
 
 					<a href="<?php echo home_url(); ?>" title="<?php bloginfo('description'); ?>">
 						<?php if (!option::get('misc_logo_path')) { bloginfo('name'); } else { ?>
-							<img src="<?php echo ui::logo(); ?>" alt="<?php bloginfo('name'); ?>" />
+							<img style="width: 100%;" src="<?php echo ui::logo(); ?>" alt="<?php bloginfo('name'); ?>" />
 						<?php } ?>
 					</a>
 

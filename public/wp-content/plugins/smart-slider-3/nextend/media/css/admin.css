@@ -959,6 +959,7 @@ html[dir="rtl"] .n2-list li > .n2-actions {
     border: 1px solid #a3adb7;
     border-width: 0 1px 1px 0;
     min-height: 1000px;
+    width:100%;
 }
 
 .n2-sidebar-hidden .n2-content-area {
@@ -1619,6 +1620,7 @@ html[dir="rtl"] .n2-visual-editor-preview-tab {
     background: RGBA(43, 52, 63, 0.9);
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    width:100%;
 }
 
 .n2-box-border .n2-box-placeholder {

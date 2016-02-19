@@ -17,4 +17,40 @@
 
     scope.NextendElement = NextendElement;
 
+
+    function NextendElementContextMenu(selector, type) {
+        $.contextMenu({
+            selector: selector,
+            build: function ($triggerElement, e) {
+
+                var items = {};
+                items['copy'] = {name: "Copy", icon: "copy"};
+
+
+                var copied = $.jStorage.get(type + 'copied');
+
+                if (copied !== null) {
+                    items['paste'] = {
+                        name: "Paste",
+                        icon: "paste",
+                        callback: function () {
+                            $(this).find('input[type="hidden"]').data('field').insideChange(copied);
+                        }
+                    }
+                }
+
+                return {
+                    animation: {duration: 0, show: 'show', hide: 'hide'},
+                    zIndex: 1000000,
+                    callback: function (key, options) {
+                        $.jStorage.set(type + 'copied', $(this).find('input[type="hidden"]').val());
+                    },
+                    items: items
+                };
+            }
+        });
+    };
+
+    scope.NextendElementContextMenu = NextendElementContextMenu;
+
 })(n2, window);

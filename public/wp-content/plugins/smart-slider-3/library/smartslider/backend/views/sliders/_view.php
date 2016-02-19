@@ -18,4 +18,8 @@ class N2SmartsliderBackendSlidersView extends N2ViewBase
 
         N2SmartsliderSlidersModel::renderImportFromServerForm();
     }
+
+    public function renderRestoreFromServerForm(){
+        N2SmartsliderSlidersModel::renderRestoreFromServerForm();
+    }
 } 

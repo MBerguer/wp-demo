@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'Nextend';
-    src:    url('../fonts/Nextend.eot?e06y41');
-    src:    url('../fonts/Nextend.eot?e06y41#iefix') format('embedded-opentype'),
-    url('../fonts/Nextend.ttf?e06y41') format('truetype'),
-    url('../fonts/Nextend.woff?e06y41') format('woff'),
-    url('../fonts/Nextend.svg?e06y41#Nextend') format('svg');
+    src:    url('../fonts/Nextend.eot?j5w5a3');
+    src:    url('../fonts/Nextend.eot?j5w5a3#iefix') format('embedded-opentype'),
+    url('../fonts/Nextend.ttf?j5w5a3') format('truetype'),
+    url('../fonts/Nextend.woff?j5w5a3') format('woff'),
+    url('../fonts/Nextend.svg?j5w5a3#Nextend') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -26,6 +26,96 @@
 
 .n2-i-slideedit:before {
     content: "\e904";
+}
+.n2-i-help:before {
+    content: "\e644";
+}
+.n2-i-v-tablet-landscape:before {
+    content: "\e63a";
+}
+.n2-i-v-mobile-landscape:before {
+    content: "\e63b";
+}
+.n2-i-v-desktop-landscape:before {
+    content: "\e63c";
+}
+.n2-i-bulk:before {
+    content: "\e634";
+}
+.n2-i-notification:before {
+    content: "\e637";
+}
+.n2-i-v-tablet:before {
+    content: "\e616";
+}
+.n2-i-v-mobile:before {
+    content: "\e617";
+}
+.n2-i-v-desktop:before {
+    content: "\e618";
+}
+.n2-i-v-all:before {
+    content: "\e619";
+}
+.n2-i-smart:before {
+    content: "\e61a";
+}
+.n2-i-slider:before {
+    content: "\e61b";
+}
+.n2-i-s-open:before {
+    content: "\e61c";
+}
+.n2-i-s-close:before {
+    content: "\e61d";
+}
+.n2-i-next:before {
+    content: "\e61e";
+}
+.n2-i-n-success:before {
+    content: "\e61f";
+}
+.n2-i-n-notice:before {
+    content: "\e620";
+}
+.n2-i-n-error:before {
+    content: "\e621";
+}
+.n2-i-n-close:before {
+    content: "\e622";
+}
+.n2-i-drag:before {
+    content: "\e623";
+}
+.n2-i-a-text:before {
+    content: "\e624";
+}
+.n2-i-a-refresh:before {
+    content: "\e625";
+}
+.n2-i-a-html:before {
+    content: "\e626";
+}
+.n2-i-a-export:before {
+    content: "\e627";
+}
+.n2-i-a-duplicate:before {
+    content: "\e628";
+}
+.n2-i-a-deletes:before {
+    content: "\e629";
+}
+.n2-i-a-delete:before {
+    content: "\e62a";
+}
+.n2-i-a-back:before {
+    content: "\e62b";
+}
+.n2-i-copy:before {
+    content: "\e907";
+}
+.n2-i-paste:before {
+    content: "\e908";
 }
 .n2-i-undo:before {
     content: "\e905";
@@ -200,90 +290,6 @@
 }
 .n2-i-center:before {
     content: "\e614";
-}
-.n2-i-help:before {
-    content: "\e644";
-}
-.n2-i-v-tablet-landscape:before {
-    content: "\e63a";
-}
-.n2-i-v-mobile-landscape:before {
-    content: "\e63b";
-}
-.n2-i-v-desktop-landscape:before {
-    content: "\e63c";
-}
-.n2-i-bulk:before {
-    content: "\e634";
-}
-.n2-i-notification:before {
-    content: "\e637";
-}
-.n2-i-v-tablet:before {
-    content: "\e616";
-}
-.n2-i-v-mobile:before {
-    content: "\e617";
-}
-.n2-i-v-desktop:before {
-    content: "\e618";
-}
-.n2-i-v-all:before {
-    content: "\e619";
-}
-.n2-i-smart:before {
-    content: "\e61a";
-}
-.n2-i-slider:before {
-    content: "\e61b";
-}
-.n2-i-s-open:before {
-    content: "\e61c";
-}
-.n2-i-s-close:before {
-    content: "\e61d";
-}
-.n2-i-next:before {
-    content: "\e61e";
-}
-.n2-i-n-success:before {
-    content: "\e61f";
-}
-.n2-i-n-notice:before {
-    content: "\e620";
-}
-.n2-i-n-error:before {
-    content: "\e621";
-}
-.n2-i-n-close:before {
-    content: "\e622";
-}
-.n2-i-drag:before {
-    content: "\e623";
-}
-.n2-i-a-text:before {
-    content: "\e624";
-}
-.n2-i-a-refresh:before {
-    content: "\e625";
-}
-.n2-i-a-html:before {
-    content: "\e626";
-}
-.n2-i-a-export:before {
-    content: "\e627";
-}
-.n2-i-a-duplicate:before {
-    content: "\e628";
-}
-.n2-i-a-deletes:before {
-    content: "\e629";
-}
-.n2-i-a-delete:before {
-    content: "\e62a";
-}
-.n2-i-a-back:before {
-    content: "\e62b";
 }
 .n2-i-up:before {
     content: "\e63e";

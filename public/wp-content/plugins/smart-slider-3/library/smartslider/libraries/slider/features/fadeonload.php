@@ -15,11 +15,9 @@ class N2SmartSliderFeatureFadeOnLoad
 
         $this->slider = $slider;
 
-        $this->fadeOnLoad   = intval($slider->params->get('fadeOnLoad', 1));
-        $this->fadeOnScroll = intval($slider->params->get('fadeOnScroll', 0));
+        $this->fadeOnLoad      = intval($slider->params->get('fadeOnLoad', 1));
+        $this->fadeOnScroll    = intval($slider->params->get('fadeOnScroll', 0));
         $this->playWhenVisible = intval($slider->params->get('playWhenVisible', 1));
-
-
 
         if (!empty($this->fadeOnScroll) && $this->fadeOnScroll) {
             $this->fadeOnLoad   = 1;
@@ -67,7 +65,7 @@ class N2SmartSliderFeatureFadeOnLoad
     }
 
     public function makeJavaScriptProperties(&$properties) {
-        $properties['load'] = array(
+        $properties['load']            = array(
             'fade'   => $this->fadeOnLoad,
             'scroll' => ($this->fadeOnScroll & !$this->slider->isAdmin)
         );
@@ -77,12 +75,14 @@ class N2SmartSliderFeatureFadeOnLoad
 
     private function makeImage($sizes) {
         $html = N2Html::image("data:image/svg+xml;base64," . $this->transparentImage($sizes['width'] + $sizes['marginHorizontal'], $sizes['height']), '', array(
-            'style' => 'width: 100%; max-width:' . ($this->slider->features->responsive->maximumSlideWidth + $sizes['marginHorizontal']) . 'px;'
+            'style' => 'width: 100%; max-width:' . ($this->slider->features->responsive->maximumSlideWidth + $sizes['marginHorizontal']) . 'px;',
+            'class' => 'n2-ow'
         ));
 
         if ($sizes['marginVertical'] > 0) {
             $html .= N2Html::image("data:image/svg+xml;base64," . $this->transparentImage($sizes['width'] + $sizes['marginHorizontal'], $sizes['marginVertical']), '', array(
-                'style' => 'width: 100%;'
+                'style' => 'width: 100%;',
+                'class' => 'n2-ow'
             ));
         }
 

@@ -1401,8 +1401,12 @@ if (!Array.prototype.filter) {
         this.publishElement.removeClass('n2-active');
     };
 
-    NextendSmartSliderAdminSlide.prototype.goToEdit = function (e) {
-        window.location = this.box.data('editurl');
+    NextendSmartSliderAdminSlide.prototype.goToEdit = function (e, isBlank) {
+        if (typeof isBlank !== 'undefined' && isBlank) {
+            window.open(this.box.data('editurl'), '_blank');
+        } else {
+            window.location = this.box.data('editurl');
+        }
     };
 
     NextendSmartSliderAdminSlide.prototype.duplicate = function (e) {
@@ -1438,7 +1442,15 @@ if (!Array.prototype.filter) {
 
     NextendSmartSliderAdminSlide.prototype.normalMode = function () {
         this.box.off('.n2-slide');
-        this.box.on('click.n2-slide', $.proxy(this.goToEdit, this));
+        this.box.on({
+            'click.n2-slide': $.proxy(this.goToEdit, this),
+            'mousedown.n2-slide': $.proxy(function (e) {
+                if (e.which == 2 || e.which == 4) {
+                    e.preventDefault();
+                    this.goToEdit(e, true);
+                }
+            }, this)
+        });
         this.deSelect();
     };
 
@@ -3671,6 +3683,7 @@ if (!Array.prototype.filter) {
         this.needFill = ['youtubeurl'];
 
         nextend.smartSlider.generator.registerField($('#item_youtubeyoutubeurl'));
+        nextend.smartSlider.generator.registerField($('#item_youtubestart'));
     };
 
     ItemParserYouTube.prototype.getName = function (data) {
@@ -4422,21 +4435,25 @@ if (!Array.prototype.filter) {
         //this.triggerLayerResized = NextendThrottle(this.triggerLayerResized, 30);
         this._triggerLayerResizedThrottled = NextendThrottle(this._triggerLayerResized, 30);
         //this.doThrottledTheResize = NextendThrottle(this.doTheResize, 16.6666);
-        this.markSmallLayer = NextendDeBounce(this.markSmallLayer, 500);
         this.doThrottledTheResize = this.doTheResize;
         this.eye = false;
         this.lock = false;
         this.parent = false;
         this.parentIsVisible = true;
+
         this.$ = $(this);
 
         this.layerEditor = layerEditor;
+
+        /** @type {NextendSmartSliderTimelineLayer} */
+        this.timelineLayer = null;
 
         if (!layer) {
             layer = $('<div class="n2-ss-layer" style="z-index: ' + layerEditor.zIndexList.length + ';"></div>')
                 .appendTo(layerEditor.layerContainerElement);
             this.property = $.extend({
                 id: null,
+                class: '',
                 parentid: null,
                 parentalign: 'center',
                 parentvalign: 'middle',
@@ -4471,6 +4488,7 @@ if (!Array.prototype.filter) {
         } else {
             this.property = {
                 id: layer.attr('id'),
+                class: layer.data('class'),
                 parentid: layer.data('parentid'),
                 parentalign: layer.data('desktopportraitparentalign'),
                 parentvalign: layer.data('desktopportraitparentvalign'),
@@ -4675,7 +4693,6 @@ if (!Array.prototype.filter) {
         this.___makeLayerAlign();
         this.___makeLayerResizeable();
         this.___makeLayerDraggable();
-        this.___makeLayerQuickHandle();
 
         layerEditor.layerList.push(this);
         //this.index = layerEditor.layerList.push(this) - 1;
@@ -4704,8 +4721,6 @@ if (!Array.prototype.filter) {
             mousedown: $.proxy(this.activate, this),
             dblclick: $.proxy(this.fit, this)
         });
-
-        this.markSmallLayer();
 
         setTimeout($.proxy(function () {
             this._resize(true);
@@ -5133,6 +5148,12 @@ if (!Array.prototype.filter) {
         return layer;
     };
 
+    Layer.prototype.getDataWithChildren = function (layers) {
+        layers.push(this.getData(true));
+        this.layer.triggerHandler('LayerGetDataWithChildren', [layers]);
+        return layers;
+    };
+
     Layer.prototype.initItems = function () {
         this.items = [];
         var items = this.layer.find('.n2-ss-item');
@@ -5193,19 +5214,7 @@ if (!Array.prototype.filter) {
             }
         }
     };
-
-    Layer.prototype.markSmallLayer = function () {
-        if (!this.isDeleted && this.layer) {
-            var w = this.layer.width(),
-                h = this.layer.height();
-            if (w < 50 || h < 50) {
-                this.layer.addClass('n2-ss-layer-small');
-            } else {
-                this.layer.removeClass('n2-ss-layer-small');
-            }
-        }
-    };
-
+    
     // from: manager or other
     Layer.prototype.setProperty = function (name, value, from) {
         switch (name) {
@@ -5214,6 +5223,7 @@ if (!Array.prototype.filter) {
                 value = parseInt(value);
             case 'id':
             case 'parentid':
+            case 'class':
             case 'inneralign':
             case 'crop':
             case 'parallax':
@@ -5351,36 +5361,6 @@ if (!Array.prototype.filter) {
         if (needRender) {
             this.render(name, value);
         }
-
-        if (name == 'width' || name == 'height') {
-            this.markSmallLayer();
-        }
-        return;
-
-        var lastLocalValue = this.property[name],
-            lastValue = lastLocalValue;
-
-        if (!isReset && this.property[name] != value) {
-            this.property[name] = value;
-            if (deviceBased) {
-                lastValue = this.getProperty(deviceBased, name);
-                this.deviceProperty[this.getMode()][name] = value;
-            }
-        } else if (deviceBased) {
-            lastValue = this.getProperty(deviceBased, name);
-            //this.property[name] = value;
-        }
-        /*if (lastLocalValue != value) {
-         this.$.trigger('propertyChanged', [name, value]);
-         }*/
-        // The resize usually sets px for left/top/width/height values for the original percents. So we have to force those values back.
-        if (needRender) {
-            this.render(name, value);
-        }
-
-        if (name == 'width' || name == 'height') {
-            this.markSmallLayer();
-        }
     };
 
     Layer.prototype.storeWithModifier = function (name, value, modifier, needRender) {
@@ -5394,10 +5374,6 @@ if (!Array.prototype.filter) {
 
         if (needRender) {
             this.renderWithModifier(name, value, modifier);
-        }
-
-        if (name == 'width' || name == 'height') {
-            this.markSmallLayer();
         }
         return;
 
@@ -5421,7 +5397,6 @@ if (!Array.prototype.filter) {
             this.renderWithModifier(name, value, modifier);
         }
 
-        this.markSmallLayer();
     };
 
     Layer.prototype.render = function (name, value) {
@@ -5433,6 +5408,14 @@ if (!Array.prototype.filter) {
             this['_sync' + name](value);
         } else {
             this['_sync' + name](Math.round(value * modifier));
+        }
+    };
+
+    Layer.prototype._syncclass = function (value) {
+        this.layer.removeClass();
+        this.layer.addClass('n2-ss-layer');
+        if (value && value != '') {
+            this.layer.addClass(value);
         }
     };
 
@@ -5478,6 +5461,9 @@ if (!Array.prototype.filter) {
             },
             'n2-ss-deactivate': function () {
                 that.layerRow.removeClass('n2-parent-active');
+            },
+            'LayerGetDataWithChildren': function (e, layers) {
+                that.getDataWithChildren(layers);
             }
         };
         this.parent = n2('#' + this.property.parentid).on(this.subscribeParentCallbacks);
@@ -6113,32 +6099,6 @@ if (!Array.prototype.filter) {
         }, this));
     };
 
-    //<editor-fold desc="Makes a layer deletable">
-
-    Layer.prototype.___makeLayerQuickHandle = function () {
-        var quick = $('<div class="n2-ss-layer-quick-handle" style="z-index: 92;"><i class="n2-i n2-it n2-i-more"></i></div>')
-            .on('mousedown', $.proxy(function (e) {
-                e.stopPropagation();
-                this.activate();
-                var handleOffset = $(e.currentTarget).offset();
-
-                var container = $('<div class="n2-ss-layer-quick-panel"></div>').css(handleOffset)
-                    .on('click mouseleave', function () {
-                        container.remove();
-                    })
-                    .appendTo('body');
-                $('<div class="n2-ss-layer-quick-panel-option"><i class="n2-i n2-it n2-i-duplicate"></i></div>')
-                    .on('click', $.proxy(this.duplicate, this, true, false))
-                    .appendTo(container);
-                $('<div class="n2-ss-layer-quick-panel-option n2-ss-layer-quick-panel-option-center"><i class="n2-i n2-it n2-i-more"></i></div>').appendTo(container);
-                $('<div class="n2-ss-layer-quick-panel-option"><i class="n2-i n2-it n2-i-delete"></i></div>')
-                    .on('click', $.proxy(this.delete, this))
-                    .appendTo(container);
-            }, this))
-            .appendTo(this.layer);
-    };
-    //</editor-fold>
-
     Layer.prototype.changeEditorMode = function (mode) {
         var value = parseInt(this.property[mode]);
         if (value) {
@@ -6356,10 +6316,6 @@ if (!Array.prototype.filter) {
                     this[method](other[1], value, ratio, true);
                 } else {
                     this.deviceProperty[other[2]][other[1]] = value;
-
-                    if (other[1] == 'width' || other[1] == 'height') {
-                        this.markSmallLayer();
-                    }
                 }
                 this._renderModeProperties(true);
                 break;
@@ -6576,55 +6532,62 @@ if (!Array.prototype.filter) {
             keydown: $.proxy(function (e) {
                 if (e.target.tagName != 'TEXTAREA' && e.target.tagName != 'INPUT' && (!smartSlider.timelineControl || !smartSlider.timelineControl.isActivated())) {
                     if (this.activeLayerIndex != -1) {
-                        if (e.keyCode == 46) {
-                            if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
-                                this.layerList[this.activeLayerIndex].delete();
+                        var keyCode = e.keyCode;
+                        if (keyCode >= 49 && keyCode <= 57) {
+                            var location = e.originalEvent.location || e.originalEvent.keyLocation || 0;
+                            // Fix OSX Chrome numeric keycodes
+                            if (location == 3) {
+                                keyCode += 48;
                             }
-                        } else if (e.keyCode == 35) {
-                            this.layerList[this.activeLayerIndex].duplicate(true, false);
+                        }
+
+                        if (keyCode == 46) {
+                            this.delete();
+                        } else if (keyCode == 35) {
+                            this.duplicate();
                             e.preventDefault();
-                        } else if (e.keyCode == 16) {
-                            keys[e.keyCode] = 1;
-                        } else if (e.keyCode == 38) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 16) {
+                            keys[keyCode] = 1;
+                        } else if (keyCode == 38) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveY(-1 * (keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode == 40) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 40) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveY((keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode == 37) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 37) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveX(-1 * (keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode == 39) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 39) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveX((keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode >= 97 && e.keyCode <= 105) {
+                        } else if (keyCode >= 97 && keyCode <= 105) {
 
-                            var hAlign = horizontalAlign[e.keyCode],
-                                vAlign = verticalAlign[e.keyCode],
+                            var hAlign = horizontalAlign[keyCode],
+                                vAlign = verticalAlign[keyCode],
                                 toZero = false;
                             if (this.toolboxForm.align.val() == hAlign && this.toolboxForm.valign.val() == vAlign) {
                                 toZero = true;
@@ -6633,7 +6596,7 @@ if (!Array.prototype.filter) {
                             this.horizontalAlign(hAlign, toZero);
                             this.verticalAlign(vAlign, toZero);
 
-                        } else if (e.keyCode == 34) {
+                        } else if (keyCode == 34) {
                             e.preventDefault();
                             var targetIndex = this.layerList[this.activeLayerIndex].zIndex - 1;
                             if (targetIndex < 0) {
@@ -6641,7 +6604,7 @@ if (!Array.prototype.filter) {
                             }
                             this.zIndexList[targetIndex].activate();
 
-                        } else if (e.keyCode == 33) {
+                        } else if (keyCode == 33) {
                             e.preventDefault();
                             var targetIndex = this.layerList[this.activeLayerIndex].zIndex + 1;
                             if (targetIndex > this.zIndexList.length - 1) {
@@ -6650,12 +6613,16 @@ if (!Array.prototype.filter) {
                             this.zIndexList[targetIndex].activate();
 
                         } else if (e.ctrlKey || e.metaKey) {
-                            if (e.keyCode == 90) {
+                            if (keyCode == 90) {
                                 if (e.shiftKey) {
                                     smartSlider.history.redo();
                                 } else {
                                     smartSlider.history.undo();
                                 }
+                            } else if (keyCode == 67) {
+                                this.copy();
+                            } else if (keyCode == 86) {
+                                this.paste(0);
                             }
                         }
                     }
@@ -6668,6 +6635,8 @@ if (!Array.prototype.filter) {
                 }
             }, this)
         });
+
+        this.addContextMenu();
 
         if (!isUploadDisabled) {
             smartSlider.frontend.sliderElement.fileupload({
@@ -7224,6 +7193,15 @@ if (!Array.prototype.filter) {
         return list;
     };
 
+
+    AdminSlideLayerManager.prototype.getActiveLayerData = function () {
+        var layers = [];
+        if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
+            return this.layerList[this.activeLayerIndex].getDataWithChildren(layers);
+        }
+        return layers;
+    };
+
     /**
      * Get the HTML code of the whole slide
      * @returns {string} HTML
@@ -7349,6 +7327,7 @@ if (!Array.prototype.filter) {
             width: $('#layerwidth'),
             height: $('#layerheight'),
             responsivesize: $('#layerresponsive-size'),
+            class: $('#layerclass'),
             showFieldDesktopPortrait: $('#layershow-desktop-portrait'),
             showFieldDesktopLandscape: $('#layershow-desktop-landscape'),
             showFieldTabletPortrait: $('#layershow-tablet-portrait'),
@@ -7487,6 +7466,126 @@ if (!Array.prototype.filter) {
 
     AdminSlideLayerManager.prototype._formSetmobileLandscape = function (value, layer) {
         this.toolboxForm.showFieldMobileLandscape.data('field').insideChange(value);
+    };
+
+    AdminSlideLayerManager.prototype.delete = function () {
+        if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
+            this.layerList[this.activeLayerIndex].delete();
+        }
+    };
+
+    AdminSlideLayerManager.prototype.duplicate = function () {
+        if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
+            this.layerList[this.activeLayerIndex].duplicate(true, false);
+        }
+    };
+
+    AdminSlideLayerManager.prototype.copy = function (copied) {
+        if (typeof copied === 'undefined') {
+            copied = this.getCopied();
+        }
+        var layers = nextend.smartSlider.layerManager.getActiveLayerData();
+        if (layers.length) {
+            copied.unshift({
+                name: layers[0].name,
+                layers: layers
+            });
+            while (copied.length > 5) {
+                copied.pop();
+            }
+            $.jStorage.set('copied', JSON.stringify(copied));
+        }
+    };
+
+    AdminSlideLayerManager.prototype.paste = function (index, copied) {
+        if (typeof copied === 'undefined') {
+            copied = this.getCopied();
+        }
+        if (copied.length && typeof copied[index] !== 'undefined') {
+            nextend.smartSlider.layerManager.loadData(copied[index].layers, false);
+        }
+    };
+
+    AdminSlideLayerManager.prototype.getCopied = function () {
+
+        var copied = $.jStorage.get('copied');
+        if (copied === null) {
+            return [];
+        }
+        return JSON.parse(copied);
+    };
+
+    AdminSlideLayerManager.prototype.addContextMenu = function () {
+        var that = this;
+
+        $.contextMenu({
+            selector: '#n2-ss-0',
+            build: function ($triggerElement, e) {
+
+                var items = {};
+
+                if (typeof that.layerList[that.activeLayerIndex] !== 'undefined') {
+                    items['delete'] = {name: "Delete layer", icon: "delete"};
+                    items['duplicate'] = {name: "Duplicate layer", icon: "duplicate"};
+                    items['copy'] = {name: "Copy layer", icon: "copy"};
+                }
+
+
+                var copied = that.getCopied();
+                if (copied.length == 1) {
+                    items['paste'] = {
+                        name: "Paste layer",
+                        icon: "paste",
+                        callback: $.proxy(that.paste, this, 0, copied)
+                    }
+                } else if (copied.length > 1) {
+                    var pasteItems = {};
+                    for (var i = 0; i < copied.length; i++) {
+                        pasteItems['paste' + i] = {
+                            name: copied[i].name,
+                            callback: $.proxy(that.paste, this, i, copied)
+                        }
+                    }
+                    items['paste'] = {
+                        name: "Paste layer",
+                        icon: "paste",
+                        items: pasteItems
+                    }
+                }
+
+                if ($.isEmptyObject(items)) {
+                    return false;
+                }
+
+                return {
+                    animation: {duration: 0, show: 'show', hide: 'hide'},
+                    zIndex: 1000000,
+                    callback: function (key, options) {
+                        that[key]();
+                    },
+                    positionSubmenu: function ($menu) {
+                        if ($.ui && $.ui.position) {
+                            // .position() is provided as a jQuery UI utility
+                            // (...and it won't work on hidden elements)
+                            $menu.css('display', 'block').position({
+                                my: 'left+2 top',
+                                at: 'right top',
+                                of: this,
+                                collision: 'flipfit fit'
+                            }).css('display', '');
+                        } else {
+                            // determine contextMenu position
+                            var offset = {
+                                top: 0,
+                                left: this.outerWidth()
+                            };
+                            $menu.css(offset);
+                        }
+                    },
+                    items: items
+                };
+            }
+        });
     };
 
     AdminSlideLayerManager.prototype.history = function (method, value, other) {

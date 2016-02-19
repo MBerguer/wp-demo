@@ -61,7 +61,7 @@ class N2SSPluginItemButton extends N2SSPluginItemAbstract
             "onclick" => 'return false;',
             "target"  => "{target}",
             "style"   => "display: {display}",
-            "class"   => "{styleclass} {class}"
+            "class"   => "{styleclass} {class} n2-ow"
         )));
     }
 

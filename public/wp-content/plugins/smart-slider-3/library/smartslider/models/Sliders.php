@@ -102,6 +102,18 @@ class N2SmartsliderSlidersModel extends N2Model
         echo $form->render('slider');
     }
 
+    public static function renderRestoreFromServerForm(){
+        $configurationXmlFile = dirname(__FILE__) . '/forms/import/restorefromserver.xml';
+
+        N2Loader::import('libraries.form.form');
+        $form = new N2Form(N2Base::getApplication('smartslider')
+                                 ->getApplicationType('backend'));
+
+        $form->loadXMLFile($configurationXmlFile);
+
+        echo $form->render('slider');
+    }
+
     function import($slider) {
         try {
             $this->db->insert(array(

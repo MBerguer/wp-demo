@@ -15,6 +15,7 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType
             'border-color'                           => '3E3E3Eff',
             'border-radius'                          => 0,
             'slider-css'                             => '',
+            'slide-css'                              => '',
             'animation'                              => 'horizontal',
             'animation-duration'                     => 800,
             'animation-delay'                        => 0,
@@ -49,6 +50,7 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType
 
         $background = $params->get('background');
         $css        = $params->get('slider-css');
+        $slidecss   = $params->get('slide-css');
         if (!empty($background)) {
             $css = 'background-image: url(' . N2ImageHelper::fixed($background) . ');';
         }
@@ -65,7 +67,7 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType
                 <?php if ($this->backgroundAnimation): ?>
                     <div class="n2-ss-background-animation"></div>
                 <?php endif; ?>
-                <div class="n2-ss-slider-3">
+                <div class="n2-ss-slider-3" style="<?php echo $slidecss; ?>">
 
                     <?php
                     echo $this->slider->staticHtml;
@@ -103,7 +105,7 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType
 
         N2Plugin::callPlugin('nextendslider', 'onNextendSliderProperties', array(&$this->javaScriptProperties));
 
-        N2JS::addFirstCode("new NextendSmartSliderSimple(n2('#{$this->slider->elementId}'), " . json_encode($this->javaScriptProperties) . ");");
+        N2JS::addFirstCode("new NextendSmartSliderSimple('#{$this->slider->elementId}', " . json_encode($this->javaScriptProperties) . ");");
 
         echo N2Html::clear();
     }

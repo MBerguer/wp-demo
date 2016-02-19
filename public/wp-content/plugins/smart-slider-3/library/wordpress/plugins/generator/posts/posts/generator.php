@@ -51,6 +51,7 @@ class N2GeneratorPostsPosts extends N2GeneratorAbstract
             $record['author_url']  = get_the_author_meta('url');
             $record['date']        = get_the_date();
             $record['excerpt']     = get_the_excerpt();
+            $record['modified']    = get_the_modified_date();
 
             $category = get_the_category($post->ID);
             if (isset($category[0])) {

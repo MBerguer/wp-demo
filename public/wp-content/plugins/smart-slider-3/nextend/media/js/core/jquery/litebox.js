@@ -265,7 +265,7 @@
                     src = 'https://www.youtube.com/embed/' + videoURL[3] + '?fs=1&amp;wmode=opaque&amp;autoplay=1';
 
                 if (videoURL[1] == 'vimeo')
-                    src = 'http://player.vimeo.com/video/' + videoURL[3] + '?autoplay=1';
+                    src = 'https://player.vimeo.com/video/' + videoURL[3] + '?autoplay=1';
 
                 if (videoURL[1] == 'dailymotion')
                     src = 'https://www.dailymotion.com/embed/video/' + videoURL[7];

@@ -93,4 +93,8 @@
 
     scope.NextendElementStyle = NextendElementStyle;
 
+    $(window).ready(function () {
+        new NextendElementContextMenu('.n2-form-element-style', 'style');
+    });
+
 })(n2, window);

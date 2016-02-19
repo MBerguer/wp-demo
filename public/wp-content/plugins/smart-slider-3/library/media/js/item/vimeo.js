@@ -23,7 +23,7 @@
             this.parameters.autoplay = 0;
         }
 
-        if (this.parameters.autoplay == 1 || !hasImage) {
+        if (this.parameters.autoplay == 1 || !hasImage || n2const.isIOS) {
             this.ready($.proxy(this.initVimeoPlayer, this));
         } else {
             $("#" + this.playerId).on('click', $.proxy(function () {

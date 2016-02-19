@@ -28,7 +28,7 @@
             }
             setTimeout($.proxy(function () {
                 this.preventScroll = false;
-            }, this), 400);
+            }, this), 90);
         } else {
             e.preventDefault();
         }

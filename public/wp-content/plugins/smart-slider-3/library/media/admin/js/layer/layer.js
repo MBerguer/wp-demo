@@ -53,21 +53,25 @@
         //this.triggerLayerResized = NextendThrottle(this.triggerLayerResized, 30);
         this._triggerLayerResizedThrottled = NextendThrottle(this._triggerLayerResized, 30);
         //this.doThrottledTheResize = NextendThrottle(this.doTheResize, 16.6666);
-        this.markSmallLayer = NextendDeBounce(this.markSmallLayer, 500);
         this.doThrottledTheResize = this.doTheResize;
         this.eye = false;
         this.lock = false;
         this.parent = false;
         this.parentIsVisible = true;
+
         this.$ = $(this);
 
         this.layerEditor = layerEditor;
+
+        /** @type {NextendSmartSliderTimelineLayer} */
+        this.timelineLayer = null;
 
         if (!layer) {
             layer = $('<div class="n2-ss-layer" style="z-index: ' + layerEditor.zIndexList.length + ';"></div>')
                 .appendTo(layerEditor.layerContainerElement);
             this.property = $.extend({
                 id: null,
+                class: '',
                 parentid: null,
                 parentalign: 'center',
                 parentvalign: 'middle',
@@ -102,6 +106,7 @@
         } else {
             this.property = {
                 id: layer.attr('id'),
+                class: layer.data('class'),
                 parentid: layer.data('parentid'),
                 parentalign: layer.data('desktopportraitparentalign'),
                 parentvalign: layer.data('desktopportraitparentvalign'),
@@ -306,7 +311,6 @@
         this.___makeLayerAlign();
         this.___makeLayerResizeable();
         this.___makeLayerDraggable();
-        this.___makeLayerQuickHandle();
 
         layerEditor.layerList.push(this);
         //this.index = layerEditor.layerList.push(this) - 1;
@@ -335,8 +339,6 @@
             mousedown: $.proxy(this.activate, this),
             dblclick: $.proxy(this.fit, this)
         });
-
-        this.markSmallLayer();
 
         setTimeout($.proxy(function () {
             this._resize(true);
@@ -764,6 +766,12 @@
         return layer;
     };
 
+    Layer.prototype.getDataWithChildren = function (layers) {
+        layers.push(this.getData(true));
+        this.layer.triggerHandler('LayerGetDataWithChildren', [layers]);
+        return layers;
+    };
+
     Layer.prototype.initItems = function () {
         this.items = [];
         var items = this.layer.find('.n2-ss-item');
@@ -824,19 +832,7 @@
             }
         }
     };
-
-    Layer.prototype.markSmallLayer = function () {
-        if (!this.isDeleted && this.layer) {
-            var w = this.layer.width(),
-                h = this.layer.height();
-            if (w < 50 || h < 50) {
-                this.layer.addClass('n2-ss-layer-small');
-            } else {
-                this.layer.removeClass('n2-ss-layer-small');
-            }
-        }
-    };
-
+    
     // from: manager or other
     Layer.prototype.setProperty = function (name, value, from) {
         switch (name) {
@@ -845,6 +841,7 @@
                 value = parseInt(value);
             case 'id':
             case 'parentid':
+            case 'class':
             case 'inneralign':
             case 'crop':
             case 'parallax':
@@ -982,36 +979,6 @@
         if (needRender) {
             this.render(name, value);
         }
-
-        if (name == 'width' || name == 'height') {
-            this.markSmallLayer();
-        }
-        return;
-
-        var lastLocalValue = this.property[name],
-            lastValue = lastLocalValue;
-
-        if (!isReset && this.property[name] != value) {
-            this.property[name] = value;
-            if (deviceBased) {
-                lastValue = this.getProperty(deviceBased, name);
-                this.deviceProperty[this.getMode()][name] = value;
-            }
-        } else if (deviceBased) {
-            lastValue = this.getProperty(deviceBased, name);
-            //this.property[name] = value;
-        }
-        /*if (lastLocalValue != value) {
-         this.$.trigger('propertyChanged', [name, value]);
-         }*/
-        // The resize usually sets px for left/top/width/height values for the original percents. So we have to force those values back.
-        if (needRender) {
-            this.render(name, value);
-        }
-
-        if (name == 'width' || name == 'height') {
-            this.markSmallLayer();
-        }
     };
 
     Layer.prototype.storeWithModifier = function (name, value, modifier, needRender) {
@@ -1025,10 +992,6 @@
 
         if (needRender) {
             this.renderWithModifier(name, value, modifier);
-        }
-
-        if (name == 'width' || name == 'height') {
-            this.markSmallLayer();
         }
         return;
 
@@ -1052,7 +1015,6 @@
             this.renderWithModifier(name, value, modifier);
         }
 
-        this.markSmallLayer();
     };
 
     Layer.prototype.render = function (name, value) {
@@ -1064,6 +1026,14 @@
             this['_sync' + name](value);
         } else {
             this['_sync' + name](Math.round(value * modifier));
+        }
+    };
+
+    Layer.prototype._syncclass = function (value) {
+        this.layer.removeClass();
+        this.layer.addClass('n2-ss-layer');
+        if (value && value != '') {
+            this.layer.addClass(value);
         }
     };
 
@@ -1109,6 +1079,9 @@
             },
             'n2-ss-deactivate': function () {
                 that.layerRow.removeClass('n2-parent-active');
+            },
+            'LayerGetDataWithChildren': function (e, layers) {
+                that.getDataWithChildren(layers);
             }
         };
         this.parent = n2('#' + this.property.parentid).on(this.subscribeParentCallbacks);
@@ -1744,32 +1717,6 @@
         }, this));
     };
 
-    //<editor-fold desc="Makes a layer deletable">
-
-    Layer.prototype.___makeLayerQuickHandle = function () {
-        var quick = $('<div class="n2-ss-layer-quick-handle" style="z-index: 92;"><i class="n2-i n2-it n2-i-more"></i></div>')
-            .on('mousedown', $.proxy(function (e) {
-                e.stopPropagation();
-                this.activate();
-                var handleOffset = $(e.currentTarget).offset();
-
-                var container = $('<div class="n2-ss-layer-quick-panel"></div>').css(handleOffset)
-                    .on('click mouseleave', function () {
-                        container.remove();
-                    })
-                    .appendTo('body');
-                $('<div class="n2-ss-layer-quick-panel-option"><i class="n2-i n2-it n2-i-duplicate"></i></div>')
-                    .on('click', $.proxy(this.duplicate, this, true, false))
-                    .appendTo(container);
-                $('<div class="n2-ss-layer-quick-panel-option n2-ss-layer-quick-panel-option-center"><i class="n2-i n2-it n2-i-more"></i></div>').appendTo(container);
-                $('<div class="n2-ss-layer-quick-panel-option"><i class="n2-i n2-it n2-i-delete"></i></div>')
-                    .on('click', $.proxy(this.delete, this))
-                    .appendTo(container);
-            }, this))
-            .appendTo(this.layer);
-    };
-    //</editor-fold>
-
     Layer.prototype.changeEditorMode = function (mode) {
         var value = parseInt(this.property[mode]);
         if (value) {
@@ -1987,10 +1934,6 @@
                     this[method](other[1], value, ratio, true);
                 } else {
                     this.deviceProperty[other[2]][other[1]] = value;
-
-                    if (other[1] == 'width' || other[1] == 'height') {
-                        this.markSmallLayer();
-                    }
                 }
                 this._renderModeProperties(true);
                 break;

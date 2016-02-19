@@ -27,6 +27,10 @@ class N2_SMARTSLIDER_3
         require_once dirname(NEXTEND_SMARTSLIDER_3__FILE__) . DIRECTORY_SEPARATOR . 'includes/shortcode.php';
         require_once dirname(NEXTEND_SMARTSLIDER_3__FILE__) . DIRECTORY_SEPARATOR . 'includes/widget.php';
         require_once dirname(NEXTEND_SMARTSLIDER_3__FILE__) . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'shortcode.php';
+        
+        add_action('et_builder_ready', 'N2_SMARTSLIDER_3::Divi_load_module');
+
+        add_action('vc_after_set_mode', 'N2_SMARTSLIDER_3::initVisualComposer');
     }
 
     public static function registerApplication() {
@@ -132,6 +136,14 @@ class N2_SMARTSLIDER_3
               ), array(true));
 
         $wpdb->prefix = $tmpPrefix;
+    }
+
+    public static function Divi_load_module() {
+        require_once dirname(__FILE__) . '/divi.php';
+    }
+
+    public static function initVisualComposer() {
+        require_once dirname(__FILE__) . '/vc.php';
     }
 }
 

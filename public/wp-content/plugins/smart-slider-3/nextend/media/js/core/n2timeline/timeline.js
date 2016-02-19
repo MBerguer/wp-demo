@@ -15,7 +15,7 @@
 
             for (var i = 0; i < this.tweensContainer.length; i++) {
                 var tweenContainer = this.tweensContainer[i];
-                var currentProgress = (this._progress - tweenContainer.startProgress) / (tweenContainer.endProgress - tweenContainer.startProgress);
+                var currentProgress = Math.min(1, (this._progress - tweenContainer.startProgress) / (tweenContainer.endProgress - tweenContainer.startProgress));
                 if (tweenContainer.tween._isCompleted && currentProgress <= tweenContainer.endProgress) {
                     tweenContainer.tween.reset();
                 }
@@ -24,12 +24,13 @@
                     tweenContainer.tween._onStart();
                 }
                 if (tweenContainer.tween._isStarted) {
-                    if (currentProgress >= 1 && !tweenContainer.tween._isCompleted) {
-                        currentProgress = 1;
+                    if (currentProgress == 1 && !tweenContainer.tween._isCompleted) {
                         tweenContainer.tween.progress(currentProgress);
                         tweenContainer.tween._onComplete();
                     } else if (currentProgress >= 0 && currentProgress < 1) {
                         tweenContainer.tween.progress(currentProgress);
+                    } else if (currentProgress < 0 && tweenContainer.tween.progress() != 0) {
+                        tweenContainer.tween.progress(0);
                     }
                 }
             }

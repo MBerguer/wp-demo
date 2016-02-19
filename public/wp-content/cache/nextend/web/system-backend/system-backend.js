@@ -3867,11 +3867,23 @@
             desktop: {
                 size: '0|*|0'
             },
+            'desktop-retina': {
+                image: '',
+                size: '0|*|0'
+            },
             tablet: {
                 image: '',
                 size: '0|*|0'
             },
+            'tablet-retina': {
+                image: '',
+                size: '0|*|0'
+            },
             mobile: {
+                image: '',
+                size: '0|*|0'
+            },
+            'mobile-retina': {
                 image: '',
                 size: '0|*|0'
             }
@@ -3888,6 +3900,7 @@
     };
 
     NextendImageEditorController.prototype.loadToEditor = function () {
+        this.currentVisual = $.extend({}, this.getEmptyVisual(), this.currentVisual);
         this.editor.load(this.currentImage, this.currentVisual);
     };
 
@@ -3911,6 +3924,18 @@
                     'nextendChange.n2-editor': $.proxy(this.changeSize, this, 'desktop')
                 }
             },
+            'desktop-retina-image': {
+                element: $('#n2-image-editordesktop-retina-image'),
+                events: {
+                    'nextendChange.n2-editor': $.proxy(this.changeImage, this, 'desktop-retina')
+                }
+            },
+            'desktop-retina-size': {
+                element: $('#n2-image-editordesktop-retina-size'),
+                events: {
+                    'nextendChange.n2-editor': $.proxy(this.changeSize, this, 'desktop-retina')
+                }
+            },
             'tablet-image': {
                 element: $('#n2-image-editortablet-image'),
                 events: {
@@ -3921,6 +3946,18 @@
                 element: $('#n2-image-editortablet-size'),
                 events: {
                     'nextendChange.n2-editor': $.proxy(this.changeSize, this, 'tablet')
+                }
+            },
+            'tablet-retina-image': {
+                element: $('#n2-image-editortablet-retina-image'),
+                events: {
+                    'nextendChange.n2-editor': $.proxy(this.changeImage, this, 'tablet-retina')
+                }
+            },
+            'tablet-retina-size': {
+                element: $('#n2-image-editortablet-retina-size'),
+                events: {
+                    'nextendChange.n2-editor': $.proxy(this.changeSize, this, 'tablet-retina')
                 }
             },
             'mobile-image': {
@@ -3934,13 +3971,28 @@
                 events: {
                     'nextendChange.n2-editor': $.proxy(this.changeSize, this, 'mobile')
                 }
+            },
+            'mobile-retina-image': {
+                element: $('#n2-image-editormobile-retina-image'),
+                events: {
+                    'nextendChange.n2-editor': $.proxy(this.changeImage, this, 'mobile-retina')
+                }
+            },
+            'mobile-retina-size': {
+                element: $('#n2-image-editormobile-retina-size'),
+                events: {
+                    'nextendChange.n2-editor': $.proxy(this.changeSize, this, 'mobile-retina')
+                }
             }
         }
 
         this.previews = {
             desktop: $('#n2-image-editordesktop-preview'),
+            'desktop-retina': $('#n2-image-editordesktop-retina-preview'),
             tablet: $('#n2-image-editortablet-preview'),
-            mobile: $('#n2-image-editormobile-preview')
+            'tablet-retina': $('#n2-image-editortablet-retina-preview'),
+            mobile: $('#n2-image-editormobile-preview'),
+            'mobile-retina': $('#n2-image-editormobile-retina-preview')
         };
 
         var generateTablet = $(this.buttonGenerate())
@@ -3958,7 +4010,7 @@
     NextendImageEditor.prototype.load = function (image, values) {
         this._off();
         for (var k in this.fields) {
-            var keys = k.split('-');
+            var keys = [k.substring(0, k.lastIndexOf("-")), k.substring(k.lastIndexOf("-") + 1)];
             this.fields[k].element.data('field').insideChange(values[keys[0]][keys[1]]);
         }
         this.desktopImage = image;

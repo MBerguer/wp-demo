@@ -75,7 +75,16 @@ class N2SmartSliderSlides
             }
         }
 
-        for ($i = 0; $i < count($slides) && count($slides) > 1; $i++) {
+        $staticSlidesCount = 0;
+        for ($i = 0; $i < count($slides); $i++) {
+            if ($slides[$i]->isStatic()) {
+                $staticSlidesCount++;
+            }
+        }
+        
+        $countSlides = count($slides);
+
+        for ($i = 0; $i < count($slides) && $countSlides > $staticSlidesCount; $i++) {
             if ($slides[$i]->isStatic()) {
                 $this->slider->addStaticSlide($slides[$i]);
                 array_splice($slides, $i, 1);

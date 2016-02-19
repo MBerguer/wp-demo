@@ -154,12 +154,12 @@
 }
 
 .litebox-overlay .litebox-prev {
-    background: url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../images/litebox-prev.png) no-repeat center;
+    background: url(../../../../plugins/smart-slider-3/nextend/media/images/litebox-prev.png) no-repeat center;
     left: 20px;
 }
 
 .litebox-overlay .litebox-next {
-    background: url(//172.17.0.3/wp-content/plugins/smart-slider-3/nextend/media/css/../images/litebox-next.png) no-repeat center;
+    background: url(../../../../plugins/smart-slider-3/nextend/media/images/litebox-next.png) no-repeat center;
     right: 20px;
 }
 

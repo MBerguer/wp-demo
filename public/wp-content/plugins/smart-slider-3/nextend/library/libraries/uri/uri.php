@@ -7,6 +7,8 @@ class N2UriAbstract
 
     var $_currentbase = '';
 
+    public static $scheme = 'http';
+
     static function getInstance() {
 
         static $instance;

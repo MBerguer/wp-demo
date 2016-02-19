@@ -1013,7 +1013,7 @@ ul.animation-list li.sortable-animation {
 Layout
 */
 
-.n2-lightbox-sidebar-list{
+.n2-lightbox-sidebar-list {
     overflow-y: auto;
 }
 
@@ -1206,14 +1206,7 @@ html[dir="rtl"] #n2-ss-timeline-table .n2-ss-timeline-content-timeframe .n2-time
     margin: 0 2px;
 }
 
-.n2-active > .n2-i-anim-in:before,
-.n2-active > .n2-i-anim-loop:before,
-.n2-active > .n2-i-anim-out:before {
-    content: "\e612";
-}
-
 .n2-ss-timeline-content-layers {
-    cursor: copy;
     overflow: hidden;
     width: 200%;
     background-color: #ffffff;

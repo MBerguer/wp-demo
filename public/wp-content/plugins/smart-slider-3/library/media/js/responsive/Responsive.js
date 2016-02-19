@@ -145,8 +145,15 @@
             mobilePortraitScreenWidth: 440,
             tabletLandscapeScreenWidth: 1024,
             mobileLandscapeScreenWidth: 740,
-            orientationMode: 'width_and_height'
+            orientationMode: 'width_and_height',
+            scrollFix: 0,
+            overflowHiddenPage: 0
         }, parameters);
+
+
+        if (!this.slider.isAdmin && this.parameters.overflowHiddenPage) {
+            $('html, body').css('overflow', 'hidden');
+        }
 
         if (this.parameters.orientationMode == 'width') {
             this.orientationMode = NextendSmartSliderResponsive.OrientationMode.SCREEN_WIDTH_ONLY;
@@ -222,6 +229,22 @@
         this.onResize();
         if (this.parameters.onResizeEnabled || this.parameters.type == 'adaptive') {
             $(window).on('resize', $.proxy(this.onResize, this));
+
+
+            this.sliderElement.on('SliderInternalResize', $.proxy(this.onResize, this));
+
+            if (this.parameters.scrollFix) {
+                try {
+                    var that = this,
+                        iframe = $('<iframe sandbox="allow-same-origin" style="height: 0; background-color: transparent; margin: 0; padding: 0; overflow: hidden; border-width: 0; position: absolute; width: 100%;"/>')
+                            .on('load', function (e) {
+                                $(e.target.contentWindow ? e.target.contentWindow : e.target.contentDocument.defaultView).on('resize', function () {
+                                    that.sliderElement.triggerHandler('SliderInternalResize');
+                                });
+                            }).insertBefore(this.containerElement);
+                } catch (e) {
+                }
+            }
         }
     };
 
@@ -656,15 +679,8 @@
     };
 
     NextendSmartSliderResponsive.prototype._buildRatios = function (ratios, dynamicHeight, nextSlideIndex) {
-        if (this.parameters.minimumHeightRatio > 0) {
-            ratios.h = Math.max(ratios.h, this.parameters.minimumHeightRatio);
-        }
 
         var deviceModeOrientation = this.getDeviceModeOrientation();
-
-        if (this.parameters.maximumHeightRatio[deviceModeOrientation] > 0) {
-            ratios.h = Math.min(ratios.h, this.parameters.maximumHeightRatio[deviceModeOrientation]);
-        }
 
         if (this.parameters.maximumSlideWidthRatio[deviceModeOrientation] > 0 && ratios.slideW > this.parameters.maximumSlideWidthRatio[deviceModeOrientation]) {
             ratios.slideW = this.parameters.maximumSlideWidthRatio[deviceModeOrientation];
@@ -675,10 +691,17 @@
         var verticalRatioModifier = this.parameters.verticalRatioModifiers[deviceModeOrientation];
         ratios.slideH *= verticalRatioModifier;
         if (this.parameters.type == 'fullpage') {
-            if (ratios.slideH > ratios.h) {
-                ratios.slideW /= ratios.slideH / ratios.h;
+
+            if (this.parameters.minimumHeightRatio > 0) {
+                ratios.h = Math.max(ratios.h, this.parameters.minimumHeightRatio);
             }
+
+            if (this.parameters.maximumHeightRatio[deviceModeOrientation] > 0) {
+                ratios.h = Math.min(ratios.h, this.parameters.maximumHeightRatio[deviceModeOrientation]);
+            }
+
             ratios.slideH = Math.min(ratios.slideH, ratios.h);
+            ratios.slideH = ratios.slideW = Math.min(ratios.slideW, ratios.slideH);
 
             if (this.slider.isAdmin) {
                 ratios.w = ratios.slideW;
@@ -686,23 +709,35 @@
             }
         } else {
             ratios.h *= verticalRatioModifier;
+
+            if (this.parameters.minimumHeightRatio > 0) {
+                ratios.h = Math.max(ratios.h, this.parameters.minimumHeightRatio);
+            }
+
+            if (this.parameters.maximumHeightRatio[deviceModeOrientation] > 0) {
+                ratios.h = Math.min(ratios.h, this.parameters.maximumHeightRatio[deviceModeOrientation]);
+            }
+
             ratios.slideH = Math.min(ratios.slideH, ratios.h);
-            //if (this.parameters.type == 'showcase') {
-            // Constrain slide ratio in showcase type
             ratios.slideW = ratios.slideH / verticalRatioModifier;
-            //}
-        }
 
-        var slideIndex = this.slider.currentSlideIndex;
-        if (typeof nextSlideIndex !== 'undefined') {
-            slideIndex = nextSlideIndex;
-        }
+            if (this.slider.type == "showcase") {
+                ratios.slideW = Math.min(ratios.slideW, ratios.w);
+                ratios.slideH = Math.min(ratios.slideW, ratios.slideH);
+            }
 
-        if (dynamicHeight) {
-            var backgroundRatio = this.slider.backgroundImages.backgroundImages[slideIndex].responsiveElement.relativeRatio;
-            if (backgroundRatio != -1) {
-                ratios.slideH *= backgroundRatio;
-                ratios.h *= backgroundRatio;
+            if (dynamicHeight) {
+
+                var slideIndex = this.slider.currentSlideIndex;
+                if (typeof nextSlideIndex !== 'undefined') {
+                    slideIndex = nextSlideIndex;
+                }
+
+                var backgroundRatio = this.slider.backgroundImages.backgroundImages[slideIndex].responsiveElement.relativeRatio;
+                if (backgroundRatio != -1) {
+                    ratios.slideH *= backgroundRatio;
+                    ratios.h *= backgroundRatio;
+                }
             }
         }
 

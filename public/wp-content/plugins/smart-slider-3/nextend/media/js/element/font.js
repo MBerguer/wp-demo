@@ -92,4 +92,8 @@
 
     scope.NextendElementFont = NextendElementFont;
 
+    $(window).ready(function(){
+        new NextendElementContextMenu('.n2-form-element-font', 'font');
+    });
+
 })(n2, window);

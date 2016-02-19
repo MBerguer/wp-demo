@@ -1,4 +1,9 @@
 (function ($, scope, undefined) {
+
+    var isRetina = (function () {
+        return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)').matches)) || (window.devicePixelRatio && window.devicePixelRatio >= 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+    })();
+
     function NextendSmartSliderBackgroundImages(slider) {
         this.device = null;
 
@@ -179,9 +184,25 @@
         }
 
         this.hash = element.data('hash');
+
         this.desktopSrc = element.data('desktop');
         this.tabletSrc = element.data('tablet');
         this.mobileSrc = element.data('mobile');
+
+        if (isRetina) {
+            var retina = element.data('desktop-retina');
+            if (retina) {
+                this.desktopSrc = retina;
+            }
+            retina = element.data('tablet-retina');
+            if (retina) {
+                this.tabletSrc = retina;
+            }
+            retina = element.data('mobile-retina');
+            if (retina) {
+                this.mobileSrc = retina;
+            }
+        }
         var opacity = element.data('opacity');
         if (opacity >= 0 && opacity < 1) {
             this.opacity = opacity;
@@ -272,6 +293,11 @@
         this.notListenImageManager();
         this.desktopSrc = src;
         this.hash = md5(src);
+
+        if (newMode == 'default') {
+            newMode = nextend.smartSlider.slideBackgroundMode;
+        }
+
         this.change(src, alt, newMode);
 
         if (src != '') {

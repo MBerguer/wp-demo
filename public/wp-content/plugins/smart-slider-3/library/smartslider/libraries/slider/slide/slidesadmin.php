@@ -50,6 +50,9 @@ class N2SmartSliderSlidesAdmin extends N2SmartSliderSlides
                 ));
                 if ($slide->isStatic()) {
                     $this->slider->addStaticSlide($slide);
+
+                    $this->slider->setStatic(1);
+
                     if (count($slides) == 0) {
                         $slide2 = $this->createSlide(array(
                             'id'           => 0,
@@ -70,6 +73,7 @@ class N2SmartSliderSlidesAdmin extends N2SmartSliderSlides
                         array_push($slides, $slide2);
                     }
                 } else {
+
                     for ($i = 0; $i < count($slides); $i++) {
                         if ($slides[$i]->isStatic()) {
                             $this->slider->addStaticSlide($slides[$i]);
@@ -87,10 +91,20 @@ class N2SmartSliderSlidesAdmin extends N2SmartSliderSlides
                 $currentlyEditedSlide = null;
                 $isStatic             = false;
 
+                $staticSlidesCount = 0;
                 for ($i = 0; $i < count($slides); $i++) {
+                    if ($slides[$i]->isStatic()) {
+                        $staticSlidesCount++;
+                    }
+                }
+
+                $countSlides = count($slides);
+
+                for ($i = 0; $i < count($slides) && $countSlides > $staticSlidesCount; $i++) {
                     if ($slides[$i]->isStatic()) {
                         if ($slides[$i]->id == $currentlyEdited) {
                             $isStatic = true;
+                            $this->slider->setStatic(1);
                         }
                         $this->slider->addStaticSlide($slides[$i]);
                         array_splice($slides, $i, 1);

@@ -3,6 +3,7 @@
     function NextendSmartSliderFrontendBackgroundAnimation(slider, parameters, backgroundAnimations) {
         this._currentBackgroundAnimation = false;
         NextendSmartSliderMainAnimationSimple.prototype.constructor.call(this, slider, parameters);
+        this.isReverseAllowed = false;
 
         this.bgAnimationElement = this.sliderElement.find('.n2-ss-background-animation');
 
@@ -107,6 +108,14 @@
             this._currentBackgroundAnimation = false;
         }
         NextendSmartSliderMainAnimationSimple.prototype.onChangeToComplete.apply(this, arguments);
+    };
+
+    NextendSmartSliderFrontendBackgroundAnimation.prototype.onReverseChangeToComplete = function (previousSlideIndex, currentSlideIndex, isSystem) {
+        if (this._currentBackgroundAnimation) {
+            this._currentBackgroundAnimation.revertEnded();
+            this._currentBackgroundAnimation = false;
+        }
+        NextendSmartSliderMainAnimationSimple.prototype.onReverseChangeToComplete.apply(this, arguments);
     };
 
     NextendSmartSliderFrontendBackgroundAnimation.prototype.getExtraDelay = function () {

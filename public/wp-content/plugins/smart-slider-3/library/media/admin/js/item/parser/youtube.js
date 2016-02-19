@@ -11,6 +11,7 @@
         this.needFill = ['youtubeurl'];
 
         nextend.smartSlider.generator.registerField($('#item_youtubeyoutubeurl'));
+        nextend.smartSlider.generator.registerField($('#item_youtubestart'));
     };
 
     ItemParserYouTube.prototype.getName = function (data) {

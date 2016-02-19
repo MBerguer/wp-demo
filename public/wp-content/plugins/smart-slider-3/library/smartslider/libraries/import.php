@@ -24,8 +24,12 @@ class N2SmartSliderImport
         $zip        = new N2ZipRead();
         $importData = $zip->read_zip($filePathOrData, $isFilePath);
         if (!isset($importData['data'])) {
+            if(array_key_exists("slider.ss2", $importData)){
+                N2Message::error(n2_('You can\'t import sliders from Smart Slider 2.'));                
+            }
             return false;
         }
+
         $this->backup = unserialize($importData['data']);
 
         $this->sectionTranslation = array();

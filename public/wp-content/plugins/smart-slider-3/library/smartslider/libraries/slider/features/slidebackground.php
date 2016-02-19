@@ -19,10 +19,26 @@ class N2SmartSliderFeatureSlideBackground
 
         $dynamicHeight = intval($this->slider->params->get('dynamic-height', 0));
 
-        $backgroundImage        = $slide->fill($slide->parameters->get('backgroundImage', ''));
         $backgroundImageOpacity = min(100, max(0, $slide->parameters->get('backgroundImageOpacity', 100))) / 100;
-        $imageData              = N2ImageManager::getImageData($backgroundImage);
-        $sizes                  = $this->slider->assets->sizes;
+
+        if ($slide->hasGenerator()) {
+
+            $rawBackgroundImage = $slide->parameters->get('backgroundImage', '');
+            $backgroundImage    = $slide->fill($rawBackgroundImage);
+
+            $imageData = N2ImageManager::getImageData($rawBackgroundImage);
+
+            $imageData['desktop-retina']['image'] = $slide->fill($imageData['desktop-retina']['image']);
+            $imageData['tablet']['image']         = $slide->fill($imageData['tablet']['image']);
+            $imageData['tablet-retina']['image']  = $slide->fill($imageData['tablet-retina']['image']);
+            $imageData['mobile']['image']         = $slide->fill($imageData['mobile']['image']);
+            $imageData['mobile-retina']['image']  = $slide->fill($imageData['mobile-retina']['image']);
+        } else {
+            $backgroundImage = $slide->fill($slide->parameters->get('backgroundImage', ''));
+
+            $imageData = N2ImageManager::getImageData($backgroundImage);
+        }
+        $sizes = $this->slider->assets->sizes;
 
         $backgroundColor = '';
         $color           = $slide->parameters->get('backgroundColor', '');
@@ -45,7 +61,10 @@ class N2SmartSliderFeatureSlideBackground
         }
         $alt      = $slide->parameters->get('backgroundAlt', '');
         $title    = $slide->parameters->get('backgroundTitle', '');
-        $fillMode = $slide->parameters->get('backgroundMode', 'fill');
+        $fillMode = $slide->parameters->get('backgroundMode', 'default');
+        if ($fillMode == 'default') {
+            $fillMode = $this->slider->params->get('backgroundMode', 'fill');
+        }
 
         if ($dynamicHeight) {
             return $this->simple($backgroundColor, $backgroundImageOpacity, $src, $imageData, $alt, $title, $sizes);
@@ -86,14 +105,24 @@ class N2SmartSliderFeatureSlideBackground
         $attributes                 = array();
         $attributes['data-hash']    = md5($image);
         $attributes['data-desktop'] = N2ImageHelper::fixed($image);
-        if ($imageData['tablet']['image'] == '' && $imageData['mobile']['image'] == '') {
+
+        if ($imageData['desktop-retina']['image'] == '' && $imageData['tablet']['image'] == '' && $imageData['tablet-retina']['image'] == '' && $imageData['mobile']['image'] == '' && $imageData['mobile-retina']['image'] == '') {
 
         } else {
+            if ($imageData['desktop-retina']['image'] != '') {
+                $attributes['data-desktop-retina'] = N2ImageHelper::fixed($imageData['desktop-retina']['image']);
+            }
             if ($imageData['tablet']['image'] != '') {
                 $attributes['data-tablet'] = N2ImageHelper::fixed($imageData['tablet']['image']);
             }
+            if ($imageData['tablet-retina']['image'] != '') {
+                $attributes['data-tablet-retina'] = N2ImageHelper::fixed($imageData['tablet-retina']['image']);
+            }
             if ($imageData['mobile']['image'] != '') {
                 $attributes['data-mobile'] = N2ImageHelper::fixed($imageData['mobile']['image']);
+            }
+            if ($imageData['mobile-retina']['image'] != '') {
+                $attributes['data-mobile-retina'] = N2ImageHelper::fixed($imageData['mobile-retina']['image']);
             }
 
             //We have to force the fade on load enabled to make sure the user get great result.
@@ -140,7 +169,7 @@ class N2SmartSliderFeatureSlideBackground
             ), N2Html::image($this->getDefaultImage($src, $deviceAttributes), $alt, array(
             "title" => $title,
             "style" => $style . 'opacity:' . $backgroundImageOpacity . ';',
-            "class" => "n2-ss-slide-background-image n2-ss-slide-fill"
+            "class" => "n2-ss-slide-background-image n2-ss-slide-fill n2-ow"
         )));
     }
 
@@ -157,7 +186,7 @@ class N2SmartSliderFeatureSlideBackground
             ), N2Html::image($this->getDefaultImage($src, $deviceAttributes), $alt, array(
             "title" => $title,
             "style" => $style . 'opacity:' . $backgroundImageOpacity . ';',
-            "class" => "n2-ss-slide-background-image n2-ss-slide-simple"
+            "class" => "n2-ss-slide-background-image n2-ss-slide-simple n2-ow"
         )));
     }
 
@@ -189,7 +218,7 @@ class N2SmartSliderFeatureSlideBackground
             ), N2Html::image($this->getDefaultImage($src, $deviceAttributes), $alt, array(
             "title" => $title,
             "style" => $style . 'opacity:' . $backgroundImageOpacity . ';',
-            "class" => "n2-ss-slide-background-image n2-ss-slide-fit"
+            "class" => "n2-ss-slide-background-image n2-ss-slide-fit n2-ow"
         )));
     }
 
@@ -202,7 +231,7 @@ class N2SmartSliderFeatureSlideBackground
             ), N2Html::image($this->getDefaultImage($src, $deviceAttributes), $alt, array(
             "title" => $title,
             "style" => 'opacity:' . $backgroundImageOpacity . ';',
-            "class" => "n2-ss-slide-background-image n2-ss-slide-stretch"
+            "class" => "n2-ss-slide-background-image n2-ss-slide-stretch n2-ow"
         )));
     }
 

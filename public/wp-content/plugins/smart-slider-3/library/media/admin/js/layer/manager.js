@@ -151,55 +151,62 @@
             keydown: $.proxy(function (e) {
                 if (e.target.tagName != 'TEXTAREA' && e.target.tagName != 'INPUT' && (!smartSlider.timelineControl || !smartSlider.timelineControl.isActivated())) {
                     if (this.activeLayerIndex != -1) {
-                        if (e.keyCode == 46) {
-                            if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
-                                this.layerList[this.activeLayerIndex].delete();
+                        var keyCode = e.keyCode;
+                        if (keyCode >= 49 && keyCode <= 57) {
+                            var location = e.originalEvent.location || e.originalEvent.keyLocation || 0;
+                            // Fix OSX Chrome numeric keycodes
+                            if (location == 3) {
+                                keyCode += 48;
                             }
-                        } else if (e.keyCode == 35) {
-                            this.layerList[this.activeLayerIndex].duplicate(true, false);
+                        }
+
+                        if (keyCode == 46) {
+                            this.delete();
+                        } else if (keyCode == 35) {
+                            this.duplicate();
                             e.preventDefault();
-                        } else if (e.keyCode == 16) {
-                            keys[e.keyCode] = 1;
-                        } else if (e.keyCode == 38) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 16) {
+                            keys[keyCode] = 1;
+                        } else if (keyCode == 38) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveY(-1 * (keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode == 40) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 40) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveY((keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode == 37) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 37) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveX(-1 * (keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode == 39) {
-                            if (!keys[e.keyCode]) {
+                        } else if (keyCode == 39) {
+                            if (!keys[keyCode]) {
                                 var fn = $.proxy(function () {
                                     this.layerList[this.activeLayerIndex].moveX((keys[16] ? 10 : 1))
                                 }, this);
                                 fn();
-                                keys[e.keyCode] = setInterval(fn, 100);
+                                keys[keyCode] = setInterval(fn, 100);
                             }
                             e.preventDefault();
-                        } else if (e.keyCode >= 97 && e.keyCode <= 105) {
+                        } else if (keyCode >= 97 && keyCode <= 105) {
 
-                            var hAlign = horizontalAlign[e.keyCode],
-                                vAlign = verticalAlign[e.keyCode],
+                            var hAlign = horizontalAlign[keyCode],
+                                vAlign = verticalAlign[keyCode],
                                 toZero = false;
                             if (this.toolboxForm.align.val() == hAlign && this.toolboxForm.valign.val() == vAlign) {
                                 toZero = true;
@@ -208,7 +215,7 @@
                             this.horizontalAlign(hAlign, toZero);
                             this.verticalAlign(vAlign, toZero);
 
-                        } else if (e.keyCode == 34) {
+                        } else if (keyCode == 34) {
                             e.preventDefault();
                             var targetIndex = this.layerList[this.activeLayerIndex].zIndex - 1;
                             if (targetIndex < 0) {
@@ -216,7 +223,7 @@
                             }
                             this.zIndexList[targetIndex].activate();
 
-                        } else if (e.keyCode == 33) {
+                        } else if (keyCode == 33) {
                             e.preventDefault();
                             var targetIndex = this.layerList[this.activeLayerIndex].zIndex + 1;
                             if (targetIndex > this.zIndexList.length - 1) {
@@ -225,12 +232,16 @@
                             this.zIndexList[targetIndex].activate();
 
                         } else if (e.ctrlKey || e.metaKey) {
-                            if (e.keyCode == 90) {
+                            if (keyCode == 90) {
                                 if (e.shiftKey) {
                                     smartSlider.history.redo();
                                 } else {
                                     smartSlider.history.undo();
                                 }
+                            } else if (keyCode == 67) {
+                                this.copy();
+                            } else if (keyCode == 86) {
+                                this.paste(0);
                             }
                         }
                     }
@@ -243,6 +254,8 @@
                 }
             }, this)
         });
+
+        this.addContextMenu();
 
         if (!isUploadDisabled) {
             smartSlider.frontend.sliderElement.fileupload({
@@ -799,6 +812,15 @@
         return list;
     };
 
+
+    AdminSlideLayerManager.prototype.getActiveLayerData = function () {
+        var layers = [];
+        if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
+            return this.layerList[this.activeLayerIndex].getDataWithChildren(layers);
+        }
+        return layers;
+    };
+
     /**
      * Get the HTML code of the whole slide
      * @returns {string} HTML
@@ -924,6 +946,7 @@
             width: $('#layerwidth'),
             height: $('#layerheight'),
             responsivesize: $('#layerresponsive-size'),
+            class: $('#layerclass'),
             showFieldDesktopPortrait: $('#layershow-desktop-portrait'),
             showFieldDesktopLandscape: $('#layershow-desktop-landscape'),
             showFieldTabletPortrait: $('#layershow-tablet-portrait'),
@@ -1062,6 +1085,126 @@
 
     AdminSlideLayerManager.prototype._formSetmobileLandscape = function (value, layer) {
         this.toolboxForm.showFieldMobileLandscape.data('field').insideChange(value);
+    };
+
+    AdminSlideLayerManager.prototype.delete = function () {
+        if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
+            this.layerList[this.activeLayerIndex].delete();
+        }
+    };
+
+    AdminSlideLayerManager.prototype.duplicate = function () {
+        if (typeof this.layerList[this.activeLayerIndex] !== 'undefined') {
+            this.layerList[this.activeLayerIndex].duplicate(true, false);
+        }
+    };
+
+    AdminSlideLayerManager.prototype.copy = function (copied) {
+        if (typeof copied === 'undefined') {
+            copied = this.getCopied();
+        }
+        var layers = nextend.smartSlider.layerManager.getActiveLayerData();
+        if (layers.length) {
+            copied.unshift({
+                name: layers[0].name,
+                layers: layers
+            });
+            while (copied.length > 5) {
+                copied.pop();
+            }
+            $.jStorage.set('copied', JSON.stringify(copied));
+        }
+    };
+
+    AdminSlideLayerManager.prototype.paste = function (index, copied) {
+        if (typeof copied === 'undefined') {
+            copied = this.getCopied();
+        }
+        if (copied.length && typeof copied[index] !== 'undefined') {
+            nextend.smartSlider.layerManager.loadData(copied[index].layers, false);
+        }
+    };
+
+    AdminSlideLayerManager.prototype.getCopied = function () {
+
+        var copied = $.jStorage.get('copied');
+        if (copied === null) {
+            return [];
+        }
+        return JSON.parse(copied);
+    };
+
+    AdminSlideLayerManager.prototype.addContextMenu = function () {
+        var that = this;
+
+        $.contextMenu({
+            selector: '#n2-ss-0',
+            build: function ($triggerElement, e) {
+
+                var items = {};
+
+                if (typeof that.layerList[that.activeLayerIndex] !== 'undefined') {
+                    items['delete'] = {name: "Delete layer", icon: "delete"};
+                    items['duplicate'] = {name: "Duplicate layer", icon: "duplicate"};
+                    items['copy'] = {name: "Copy layer", icon: "copy"};
+                }
+
+
+                var copied = that.getCopied();
+                if (copied.length == 1) {
+                    items['paste'] = {
+                        name: "Paste layer",
+                        icon: "paste",
+                        callback: $.proxy(that.paste, this, 0, copied)
+                    }
+                } else if (copied.length > 1) {
+                    var pasteItems = {};
+                    for (var i = 0; i < copied.length; i++) {
+                        pasteItems['paste' + i] = {
+                            name: copied[i].name,
+                            callback: $.proxy(that.paste, this, i, copied)
+                        }
+                    }
+                    items['paste'] = {
+                        name: "Paste layer",
+                        icon: "paste",
+                        items: pasteItems
+                    }
+                }
+
+                if ($.isEmptyObject(items)) {
+                    return false;
+                }
+
+                return {
+                    animation: {duration: 0, show: 'show', hide: 'hide'},
+                    zIndex: 1000000,
+                    callback: function (key, options) {
+                        that[key]();
+                    },
+                    positionSubmenu: function ($menu) {
+                        if ($.ui && $.ui.position) {
+                            // .position() is provided as a jQuery UI utility
+                            // (...and it won't work on hidden elements)
+                            $menu.css('display', 'block').position({
+                                my: 'left+2 top',
+                                at: 'right top',
+                                of: this,
+                                collision: 'flipfit fit'
+                            }).css('display', '');
+                        } else {
+                            // determine contextMenu position
+                            var offset = {
+                                top: 0,
+                                left: this.outerWidth()
+                            };
+                            $menu.css(offset);
+                        }
+                    },
+                    items: items
+                };
+            }
+        });
     };
 
     AdminSlideLayerManager.prototype.history = function (method, value, other) {

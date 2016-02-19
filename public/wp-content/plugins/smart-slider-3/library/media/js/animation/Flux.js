@@ -69,6 +69,11 @@
         this.containerElement.html('');
     };
 
+    NextendSmartSliderBackgroundAnimationFluxAbstract.prototype.revertEnded = function () {
+        this.original.nextImage.css('opacity', 1);
+        this.containerElement.html('');
+    };
+
     scope.NextendSmartSliderBackgroundAnimationFluxAbstract = NextendSmartSliderBackgroundAnimationFluxAbstract;
 
 

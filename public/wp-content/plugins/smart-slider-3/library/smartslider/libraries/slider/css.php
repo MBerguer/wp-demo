@@ -35,7 +35,8 @@ abstract class N2SmartSliderCSSAbstract
             'height' => $height . 'px',
             'canvas' => 0,
             'count'  => count($slider->slides),
-            'margin' => '0px 0px 0px 0px'
+            'margin' => '0px 0px 0px 0px',
+            'clear'  => ($params->get('weaker-selector', 0) ? 'clearv2.less' : 'clear.less')
         );
 
         $this->renderType($context);

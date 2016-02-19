@@ -4,7 +4,7 @@ Tags: wordpress slider,carousel,gallery slider,horizontal slider,image slider,la
 Donate link: https://www.facebook.com/nextendweb
 Requires at least: 4.0
 Tested up to: 4.4
-Stable tag: 3.0.20
+Stable tag: 3.0.22
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -61,7 +61,7 @@ Smart Slider 3 is a brand new and intuitive WordPress plugin to create sliders w
 * Layer cropping: visible, hidden and scroll
 * Hide layers on specific devices
 * Slide thumbnail image
-* Compatible with [Page Builder by SiteOrigin](https://wordpress.org/plugins/siteorigin-panels/)
+* Compatible with [Page Builder by SiteOrigin](https://wordpress.org/plugins/siteorigin-panels/), Visual composer and Elegant themes Divi editor
 
 
 #### Support
@@ -96,6 +96,13 @@ Upgrade to [Pro Version](http://smartslider3.com/pricing/)
 > *"This is a beautifully designed slider plugin with a very high level of polish to it, the admin area of it is great and very easy to use. This plugin can be used for much more than a simple slider – being able to create whole sections of your website." - Oliver Dale - [wplift.com](http://wplift.com/smart-slider-animated-slider-plugin)*
 
 > *"Taking all this into consideration we can safely say that Smart Slider 3 is one of the top WordPress slider plugins around and should definitely be taken into consideration when choosing the next slider plugin to implement on your WordPress site." - Mark Zahra - [wpmayor.com](http://www.wpmayor.com/smart-slider-3/)*
+
+
+#### Translations
+
+* English
+* Traditional chinese (zh_tw) 99%
+* German (de_DE) 99%
 
 
 == Installation ==
@@ -165,12 +172,36 @@ Of course! Smart Slider use protocol relative urls which works fine on http:// a
 
 == Changelog ==
 
-= 3.0.20 - 5. February 2016. =
-* Feature: Alt attribute for slide background image and image layer
+= 3.0.22 - 18. February 2016. =
+* Fix: Increased CURL import timeout to 30 seconds
+* Fix: Touch issue on OSX
+
+= 3.0.21 - 18. February 2016. =
+* Feature: Discover Smart Slider 3 window on first use with tutorial video
+* Feature: [Copy/paste layers with right click](http://doc.smartslider3.com/article/1127-slide-editor---copy-paste-layers)
+* Feature: Default slide background fill mode can be changed on [slider basis](http://doc.smartslider3.com/article/59-slider-size#fillmode)
+* Feature: Slide editor right click: for layers, fonts and styles
+* Feature: Middle click on slides in the left sidebar (edit slider view) opens the slide editor on new tab
+* Feature: Slide middle click open slide link in new page
+* Feature: Option to show on the slide's thumbnail if the slide is a video slide
+* Feature: Slide CSS option to Simple slider type
+* Feature: Improved drag/touch handling, able to switch the slider between the next and previous slide with touch.
+* Feature: [Weaker CSS selectors](http://doc.smartslider3.com/article/969-slider-settings-other) option to avoid overwriting another plugin's css what you put inside the slider
+* Feature: Visual Composer Smart Slider element added, compatibility with frontend editor
+* Feature: Elegant themes - Divi theme - module for Smart Slider
+* Fix: MAC numeric pad hotkeys
+* Fix: Custom posts conflict
+* Fix: Arrow fix on RTL
+* Fix: Slider can now appear correctly when used in tabs or lightbox
+* Fix: Backend display issue in older Safari versions
+* Fix: YouTube and Vimeo fix for iOS
+* Fix: multiple background video sizes in one slider
+* Fix: Smooth Theme visual editor compatibility fix
+* Update: Modified date variable at the WordPress Post generator
 
 = 3.0.19 - 19. January 2016. =
-* Feature: Undo/redo in slide editor
-* Feature: Quick Edit option for slide names, descriptions and links
+* Feature: [Undo/redo](http://doc.smartslider3.com/article/946-undo-redo) in slide editor
+* Feature: [Quick Edit option](http://doc.smartslider3.com/article/408-slider-options) for slide names, descriptions and links
 * Fix: Centered slider on mobiles
 * Fix: Chrome layout z-index
 * Fix: Encoding error on some servers - image manager doesn't worked, create slider, create slide didn't worked correctly

@@ -51,6 +51,13 @@
             <unit value="px">px</unit>
           </param>
         </param>
+        <param name="backgroundMode" type="list" label="Default slide background fill mode" default="fill" translateable="1">
+          <option value="fill">Fill</option>
+          <option value="fit">Fit</option>
+          <option value="stretch">Stretch</option>
+          <option value="center">Center</option>
+          <option value="tile">Tile</option>
+        </param>
       </params>
       <params name="slider-responsive1" label="Responsive mode">
         <param name="responsive-mode" type="sliderresponsive" ajaxurl="slider/renderform" default="auto" file="responsive.xml"/>
@@ -72,6 +79,18 @@
             <option value="leave">Leave</option>
           </param>
           <param name="autoplayStopMedia" type="onoff" label="Media started" default="1"/></param>
+      </params>
+    </params>
+    <params name="other" type="groupped" label="Other">
+      <params name="advanced-callbacks" label="" hidetitle="1">
+        <param name="weaker-selector" type="onoff" label="Weaker CSS selectors" default="0"/>
+        <param name="delay" type="number" label="Delay" default="0" style="width:30px;">
+          <unit value="ms">ms</unit>
+        </param>
+        <param type="number" name="dependency" label="Pre loaded slider ID"/>
+        <param name="is-delayed" type="onoff" label="Delayed (for lightbox/tabs)" default="0"/>
+        <param name="overflow-hidden-page" type="onoff" label="Hide page overflow" default="0"/>
+        <param type="textarea" name="callbacks" label="JavaScript callbacks" style2="width:600px;height:600px;"/>
       </params>
     </params>
   </params>

@@ -13,7 +13,7 @@ class N2SystemBackendBrowseControllerAjax extends N2BackendControllerAjax
         $_directories = glob($path . NDS . '*', GLOB_ONLYDIR);
         (object)$directories = array();
         for ($i = 0; $i < count($_directories); $i++) {
-            $directories[basename($_directories[$i])] = $this->relative($_directories[$i], $root);
+            $directories[basename($_directories[$i])] = N2Filesystem::toLinux($this->relative($_directories[$i], $root));
         }
 
         $_files = glob($path . NDS . '*.{jpg,jpeg,png,gif}', GLOB_BRACE);
@@ -23,7 +23,7 @@ class N2SystemBackendBrowseControllerAjax extends N2BackendControllerAjax
                 $files[basename($_files[$i])] = N2ImageHelper::dynamic(N2Filesystem::pathToAbsoluteURL($_files[$i]));
             }
         }
-        $relativePath = $this->relative($path, $root);
+        $relativePath = N2Filesystem::toLinux($this->relative($path, $root));
         if (!$relativePath) {
             $relativePath = '';
         }
@@ -78,7 +78,7 @@ class N2SystemBackendBrowseControllerAjax extends N2BackendControllerAjax
             }
         }
 
-        $relativePath = $this->relative($path, $root);
+        $relativePath = N2Filesystem::toLinux($this->relative($path, $root));
         if (!$relativePath) {
             $relativePath = '';
         }

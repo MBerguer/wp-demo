@@ -42,6 +42,7 @@
             <unit value="px">px</unit>
           </param>
           <param name="responsive-size" type="onoff" label="Responsive" default="1"/></param>
+        <param type="text" name="class" label="CSS class" default=""/>
         <param type="text" name="id" label="ID" default="" class="n2-hidden"/>
         <param type="group" label="Relative point" class="n2-expert">
           <param type="layerpicker" name="parentid" label="Layer" default=""/>

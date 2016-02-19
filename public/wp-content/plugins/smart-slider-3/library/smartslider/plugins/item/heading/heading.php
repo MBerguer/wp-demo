@@ -55,7 +55,7 @@ class N2SSPluginItemHeading extends N2SSPluginItemAbstract
 
     function getTemplate($slider) {
 
-        return "<div><h{priority} id='{uid}' class='{fontclass} {styleclass} {class}' style='display: {display}; {extrastyle};'><a href='#' class='{afontclass}' onclick='return false;'>{heading}</a></h{priority}>" . N2Html::scriptTemplate($this->getJs($slider->elementId, "{uid}")) . "</div>";
+        return "<div><h{priority} id='{uid}' class='{fontclass} {styleclass} {class} n2-ow' style='display: {display}; {extrastyle};'><a href='#' class='{afontclass}' onclick='return false;'>{heading}</a></h{priority}>" . N2Html::scriptTemplate($this->getJs($slider->elementId, "{uid}")) . "</div>";
     }
 
     function getJs($sliderId, $id) {
@@ -89,13 +89,15 @@ class N2SSPluginItemHeading extends N2SSPluginItemAbstract
 
         list($link) = (array)N2Parse::parse($data->get('link', '#|*|'));
         if (!empty($link) && $link != '#') {
-            $linkAttributes['class'] = $font;
+            $linkAttributes['class'] = $font . ' n2-ow';
             $font                    = '';
+        } else {
+            $linkAttributes['class'] = ' n2-ow';
         }
 
         return $this->heading($data->get('priority', 2), $attributes + array(
                 "id"    => $id,
-                "class" => $font . $style . " " . $data->get('class', ''),
+                "class" => $font . $style . " " . $data->get('class', '') . ' n2-ow',
                 "style" => "display:" . ($data->get('fullwidth', 1) ? 'block' : 'inline-block') . ";" . ($data->get('nowrap', 1) ? 'white-space:nowrap;' : '')
             ), $this->getLink($slide, $data, str_replace("\n", '<br />', strip_tags($slide->fill($data->get('heading', '')))), $linkAttributes));
     }

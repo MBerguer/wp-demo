@@ -54,6 +54,8 @@ $this->widget->init('topbar', array());
                     'class' => 'n2-h4'
                 )) . N2Html::link(n2_('Import from server'), $this->appType->router->createUrl(array('sliders/importfromserver')), array(
                     'class' => 'n2-h4'
+                )) . N2Html::link(n2_('Restore from server'), $this->appType->router->createUrl(array('sliders/restorefromserver')), array(
+                    'class' => 'n2-h4'
                 )) . N2Html::link(n2_('Export all slider'), $this->appType->router->createUrl(array('sliders/exportall')), array(
                     'class'  => 'n2-h4',
                     'target' => '_blank'
@@ -70,37 +72,82 @@ $this->widget->init('topbar', array());
             )), false);
     
 
-        n2GetBox('', 'Documentation.png', N2Html::tag('div', array(), 'Interactive online documentation.') . N2Html::link('Read', 'http://doc.smartslider3.com', array(
+        n2GetBox('', 'Documentation.png', N2Html::tag('div', array(), n2_('Interactive online documentation.')) . N2Html::link(n2_('Read'), 'http://doc.smartslider3.com', array(
                 'target' => '_blank',
                 'class'  => 'n2-button n2-button-grey n2-button-small n2-h5 n2-uc'
             )));
-        n2GetBox('', 'Videos.png', N2Html::tag('div', array(), 'Helpful tutorial videos.') . N2Html::link('Watch', 'https://www.youtube.com/watch?v=MKmIwHAFjSU&list=PLSawiBnEUNfvzcI3pBHs4iKcbtMCQU0dB', array(
+        n2GetBox('', 'Videos.png', N2Html::tag('div', array(), n2_('Helpful tutorial videos.')) . N2Html::link(n2_('Watch'), 'https://www.youtube.com/watch?v=MKmIwHAFjSU&list=PLSawiBnEUNfvzcI3pBHs4iKcbtMCQU0dB', array(
                 'target' => '_blank',
                 'class'  => 'n2-button n2-button-grey n2-button-small n2-h5 n2-uc'
             )));
-        n2GetBox('', 'Help.png', N2Html::tag('div', array(), 'First class support with real people. ') . N2Html::link('Write', 'http://smartslider3.com/contact-us/', array(
+        n2GetBox('', 'Help.png', N2Html::tag('div', array(), n2_('First class support with real people.')) . N2Html::link(n2_('Write'), 'http://smartslider3.com/contact-us/', array(
                 'target' => '_blank',
                 'class'  => 'n2-button n2-button-grey n2-button-small n2-h5 n2-uc'
             )));
-        n2GetBox('', 'Newsletter.png', N2Html::tag('div', array(), 'Receive the latest news.') . N2Html::link('Subscribe', 'http://eepurl.com/bDp_8b', array(
+        n2GetBox('', 'Newsletter.png', N2Html::tag('div', array(), n2_('Receive the latest news.')) . N2Html::link(n2_('Subscribe'), 'http://eepurl.com/bDp_8b', array(
                 'target' => '_blank',
                 'class'  => 'n2-button n2-button-grey n2-button-small n2-h5 n2-uc'
             )));
 
-        n2GetBox('', 'Facebook.png', N2Html::tag('div', array(), 'Join the community on Facebook.') . N2Html::link('Join', 'https://www.facebook.com/nextendweb', array(
+        n2GetBox('', 'Facebook.png', N2Html::tag('div', array(), n2_('Join the community on Facebook.')) . N2Html::link(n2_('Join'), 'https://www.facebook.com/nextendweb', array(
                 'class'  => 'n2-button n2-button-grey n2-button-small n2-h5 n2-uc',
                 'target' => '_blank'
             )));
-        n2GetBox('', 'Love.png', N2Html::tag('div', array(), 'Are you satisfied with Smart Slider 3?') . N2Html::link('Yes', 'http://smartslider3.com/satisfied-customer/', array(
+        n2GetBox('', 'Love.png', N2Html::tag('div', array(), n2_('Are you satisfied with Smart Slider 3?')) . N2Html::link(n2_('Yes'), 'http://smartslider3.com/satisfied-customer/', array(
                 'target' => '_blank',
                 'class'  => 'n2-button n2-button-green n2-button-small n2-h5 n2-uc'
-            )) . N2Html::link('No', 'http://smartslider3.com/suggestion/', array(
+            )) . N2Html::link(n2_('No'), 'http://smartslider3.com/suggestion/', array(
                 'target' => '_blank',
                 'class'  => 'n2-button n2-button-red n2-button-small n2-h5 n2-uc'
             )));
+        n2GetBox('n2-box-add-license', 'AddLicense.png', '<div>' . n2_('You got the PRO license key?') . '</div><a href="http://doc.smartslider3.com/article/484-updating-the-free-version-to-the-full" target="_blank" class="n2-button n2-button-small n2-button-blue n2-uc n2-h5">' . n2_('Install PRO version') . '</a>');
+    
 
         ?>
 
         <div class="n2-clear"></div>
     </div>
+
+<?php
+if (intval(N2SmartSliderSettings::get('discover', 1)) == 1):
+    N2SmartSliderSettings::set('discover', 0);
+    ?>
+
+    <script type="text/javascript">
+        n2(window).ready(function () {
+            new NextendModal({
+                zero: {
+                    size: [
+                        913,
+                        710
+                    ],
+                    title: n2_('Discover Smart Slider 3'),
+                    back: false,
+                    close: true,
+                    content: '<iframe style="margin:20px 10px 0;" width="854" height="480" src="https://www.youtube.com/embed/fjmENHah_oY?autoplay=1" frameborder="0" allowfullscreen></iframe>',
+                    controls: ['<a href="#" class="n2-button n2-button-big n2-button-green n2-uc n2-h4">' + n2_('Close') + '</a>'],
+                    fn: {
+                        show: function () {
+                            this.createHeading(n2_("We've created a simple tutorial video to guide you through the basic steps of making your first slider. Good luck with the sliders!")).css({
+                                width: '520px',
+                                textAlign: 'center',
+                                margin: '15px auto',
+                                lineHeight: '24px'
+                            }).appendTo(this.content);
+                            this.controls.find('.n2-button-green')
+                                .on('click', n2.proxy(function (e) {
+                                    e.preventDefault();
+                                    this.hide(e);
+                                }, this));
+                        }
+                    }
+                }
+            }, true);
+
+        });
+    </script>
+
+<?php
+endif;
+?>
 <?php N2SS3::showBeacon('Main page, Import, Update'); ?>

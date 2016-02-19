@@ -1,6 +1,6 @@
 (function ($, scope, undefined) {
 
-    function NextendSmartSliderSimple(sliderElement, parameters) {
+    function NextendSmartSliderSimple(elementID, parameters) {
 
         this.type = 'simple';
         this.responsiveClass = 'NextendSmartSliderResponsiveSimple';
@@ -10,7 +10,7 @@
             carousel: 1
         }, parameters);
 
-        NextendSmartSliderAbstract.prototype.constructor.call(this, sliderElement, parameters);
+        NextendSmartSliderAbstract.prototype.constructor.call(this, elementID, parameters);
     };
 
     NextendSmartSliderSimple.prototype = Object.create(NextendSmartSliderAbstract.prototype);

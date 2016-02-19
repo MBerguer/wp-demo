@@ -123,7 +123,7 @@ class N2SSPluginWidgetAutoplayImage extends N2SSPluginWidgetAbstract
             $html = N2Html::tag('div', $displayAttributes + $attributes + array(
                     'class' => $displayClass . $styleClass . 'nextend-autoplay nextend-autoplay-image',
                     'style' => $style
-                ), N2Html::image($play, '', array('class' => 'nextend-autoplay-play')) . N2Html::image($pause, '', array('class' => 'nextend-autoplay-pause')));
+                ), N2Html::image($play, '', array('class' => 'nextend-autoplay-play n2-ow')) . N2Html::image($pause, '', array('class' => 'nextend-autoplay-pause n2-ow')));
         }
 
         return $html;

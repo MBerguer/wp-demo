@@ -254,7 +254,7 @@ class N2SmartSliderExport
 
     private static function addProtocol($image) {
         if (substr($image, 0, 2) == '//') {
-            return 'http:' . $image;
+            return N2Uri::$scheme . ':' . $image;
         }
         return $image;
     }

@@ -128,9 +128,12 @@ class N2SmartsliderBackendSlidersController extends N2SmartSliderController
         }
     }
 
-    public function actionImportFromServer() {
-        if ($this->validatePermission('smartslider_edit')) {
+    public function actionRestoreFromServer() {
+        $this->actionImportFromServer(true);
+    }
 
+    public function actionImportFromServer($restore = false) {
+        if ($this->validatePermission('smartslider_edit')) {
 
             if (N2Request::getInt('save')) {
 
@@ -145,6 +148,9 @@ class N2SmartsliderBackendSlidersController extends N2SmartSliderController
                         if (N2Filesystem::fileexists($dir . '/' . $file)) {
                             N2Loader::import('libraries.import', 'smartslider');
                             $import   = new N2SmartSliderImport();
+                            if($restore){
+                                $import->enableRestore();
+                            }
                             $sliderId = $import->import($dir . '/' . $file, $data->get('image-mode', 'clone'), $data->get('linked-visuals', 0));
 
                             if ($sliderId !== false) {
@@ -172,7 +178,11 @@ class N2SmartsliderBackendSlidersController extends N2SmartSliderController
                 }
             }
 
-            $this->addView('importFromServer');
+            if ($restore) {
+                $this->addView('restoreFromServer');
+            } else {
+                $this->addView('importFromServer');
+            }
             $this->render();
         }
     }

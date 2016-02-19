@@ -81,5 +81,11 @@
 
     scope.NextendForm = NextendForm;
 
+    $(window).ready(function () {
+        $('input[data-disabled]').on('focus', function () {
+            this.blur();
+        });
+    });
+
 
 })(n2, window);

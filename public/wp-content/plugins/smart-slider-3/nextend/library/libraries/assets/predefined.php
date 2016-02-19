@@ -23,7 +23,8 @@ class N2AssetsPredefined
             'admin.css',
             'form.css',
             'notificationcenter.css',
-            'spectrum.css'
+            'spectrum.css',
+            'contextMenu.css'
         ), 'nextend-backend');
 
         foreach (glob(N2LIBRARYASSETS . "/css/tabs/*.css") AS $file) {
@@ -86,6 +87,10 @@ class N2AssetsPredefined
         ), '1.0', 1);
     
 
+        N2JS::addFiles(N2LIBRARYASSETS . "/js/core/jquery/ui", array(
+            'jquery.contextMenu.js'
+        ), "nextend-backend");
+
         N2Base::getApplication('system')->info->assetsBackend();
         N2JS::addFirstCode("NextendAjaxHelper.addAjaxArray(" . json_encode(N2Form::tokenizeUrl()) . ");");
 
@@ -120,8 +125,8 @@ class N2AssetsPredefined
             "jquery.imagesloaded.js",
             "litebox.js",
             "jquery.universalpointer.js",
-            "jquery.touchSwipe.js",
-            "jquery.mousewheel.js"
+            "jquery.mousewheel.js",
+            "EventBurrito.js"
         ), "nextend-frontend");
         N2JS::modernizr();
 

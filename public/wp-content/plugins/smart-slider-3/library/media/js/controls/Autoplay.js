@@ -1,6 +1,5 @@
 (function ($, scope, undefined) {
     function NextendSmartSliderControlAutoplay(slider, parameters) {
-        this._inited = false;
         this._paused = true;
         this._wait = false;
         this._disabled = false;
@@ -71,6 +70,8 @@
 
         if (this.parameters.start) {
             this.continueAutoplay();
+        } else {
+            this.pauseAutoplayExtraPlaying(null, 'autoplayButton');
         }
 
         sliderElement.on('mainAnimationStart.autoplay', $.proxy(this.onMainAnimationStart, this));
@@ -137,6 +138,9 @@
         sliderElement.on('autoplayExtraWait.autoplay', $.proxy(this.pauseAutoplayExtraPlaying, this));
         sliderElement.on('autoplayExtraContinue.autoplay', $.proxy(this.pauseAutoplayExtraPlayingEnded, this));
 
+
+        this.slider.sliderElement.on('mainAnimationComplete.autoplay', $.proxy(this.onMainAnimationComplete, this));
+
     };
 
     NextendSmartSliderControlAutoplay.prototype.enableProgress = function () {
@@ -198,10 +202,6 @@
         if ((this._paused || this._wait) && !this._disabled) {
             this._paused = false;
             this._wait = false;
-            if (!this._inited) {
-                this.slider.sliderElement.on('mainAnimationComplete.autoplay', $.proxy(this.onMainAnimationComplete, this));
-                this._inited = true;
-            }
             n2c.log('Event: autoplayStarted');
             this.slider.sliderElement.triggerHandler('autoplayStarted');
 

@@ -273,7 +273,9 @@ class N2SmartsliderSlidesModel extends N2Model
         $publish_up   = date('Y-m-d H:i:s', strtotime('-1 day'));
         $publish_down = date('Y-m-d H:i:s', strtotime('+10 years'));
 
-        $parameters = array();
+        $parameters = array(
+            'thumbnailType' => 'videoDark'
+        );
 
         $slide = new N2SmartSliderSlideHelper();
 

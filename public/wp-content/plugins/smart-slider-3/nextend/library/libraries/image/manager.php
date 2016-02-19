@@ -22,11 +22,13 @@ class N2ImageManager
     }
 
     public static function load() {
-        N2Base::getApplication('system')->getApplicationType('backend')->run(array(
-            'useRequest' => false,
-            'controller' => 'image',
-            'action'     => 'index'
-        ));
+        N2Base::getApplication('system')
+              ->getApplicationType('backend')
+              ->run(array(
+                  'useRequest' => false,
+                  'controller' => 'image',
+                  'action'     => 'index'
+              ));
     }
 
     public static function getImageData($image, $read = false) {
@@ -40,7 +42,7 @@ class N2ImageManager
             }
         }
         self::$loaded[] = $visual;
-        return json_decode(base64_decode($visual['value']), true);
+        return array_merge(N2StorageImage::$emptyImage, json_decode(base64_decode($visual['value']), true));
     }
 
     public static function addImageData($image, $value) {
@@ -60,14 +62,26 @@ class N2StorageImage
     private $model = null;
 
     public static $emptyImage = array(
-        'desktop' => array(
+        'desktop'        => array(
             'size' => '0|*|0'
         ),
-        'tablet'  => array(
+        'desktop-retina' => array(
             'image' => '',
             'size'  => '0|*|0'
         ),
-        'mobile'  => array(
+        'tablet'         => array(
+            'image' => '',
+            'size'  => '0|*|0'
+        ),
+        'tablet-retina'  => array(
+            'image' => '',
+            'size'  => '0|*|0'
+        ),
+        'mobile'         => array(
+            'image' => '',
+            'size'  => '0|*|0'
+        ),
+        'mobile-retina'  => array(
             'image' => '',
             'size'  => '0|*|0'
         )

@@ -44,10 +44,11 @@ class N2SSPluginItemImage extends N2SSPluginItemAbstract
         $html .= N2Html::openTag("a", array(
             "href"    => "{url}",
             "onclick" => 'return false;',
+            "class"   => "n2-ow",
             "style"   => "display: block;background: none !important;"
         ));
 
-        $html .= '<img src="{image}" style="display: inline-block; max-width: 100%;width:{width};height:{height};" class="{cssclass}">';
+        $html .= '<img class="n2-ow" src="{image}" style="display: inline-block; max-width: 100%;width:{width};height:{height};" class="{cssclass}">';
 
         $html .= N2Html::closeTag("a");
         $html .= N2Html::closeTag("div");
@@ -73,27 +74,27 @@ class N2SSPluginItemImage extends N2SSPluginItemAbstract
                 "id"    => $id,
                 "alt"   => htmlspecialchars($slide->fill($data->get('alt', ''))),
                 "style" => "display: inline-block; max-width: 100%; width: {$size[0]};height: {$size[1]};",
-                "class" => $data->get('cssclass', ''),
+                "class" => $data->get('cssclass', '') . ' n2-ow',
                 "title" => htmlspecialchars($slide->fill($data->get('title', '')))
-            ));
+            ), false);
 
         $style = N2StyleRenderer::render($data->get('style'), 'heading', $slider->elementId, 'div#' . $slider->elementId . ' ');
         return N2Html::tag("div", array(
             "class" => $style,
             'style' => 'overflow:hidden;'
-        ), $this->getLink($slide, $data, $html));
+        ), $this->getLink($slide, $data, $html, array('class' => 'n2-ow')));
     }
 
     function getValues() {
         self::initDefaultStyle();
         return array(
-            'image'    => '$system$/images/placeholder/image.png',
-            'alt'      => n2_('Image is not available'),
-            'title'    => '',
-            'link'     => '#|*|_self',
-            'size'     => '100%|*|auto',
-            'style'    => self::$style,
-            'cssclass' => '',
+            'image'          => '$system$/images/placeholder/image.png',
+            'alt'            => n2_('Image is not available'),
+            'title'          => '',
+            'link'           => '#|*|_self',
+            'size'           => '100%|*|auto',
+            'style'          => self::$style,
+            'cssclass'       => '',
             'image-optimize' => 1
         );
     }

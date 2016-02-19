@@ -74,7 +74,7 @@ class N2SSPluginWidgetShadowShadow extends N2SSPluginWidgetAbstract
         return N2Html::tag('div', $displayAttributes + $attributes + array(
                 'class' => $displayClass . "nextend-shadow",
                 'style' => $style
-            ), N2Html::image(N2ImageHelper::fixed($shadow), '', array('style' => 'display: block; width:100%;max-width:none;','class'=>'nextend-shadow-image')));
+            ), N2Html::image(N2ImageHelper::fixed($shadow), '', array('style' => 'display: block; width:100%;max-width:none;','class'=>'n2-ow nextend-shadow-image')));
     }
 
     public static function prepareExport($export, $params) {

@@ -51,6 +51,15 @@ class N2SSPluginWidgetThumbnailDefault extends N2SSPluginWidgetAbstract
         );
         return $positions;
     }
+    
+    static function getStringBetween($string, $start, $end){
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
 
     /**
      * @param $slider N2SmartSliderAbstract
@@ -115,10 +124,10 @@ class N2SSPluginWidgetThumbnailDefault extends N2SSPluginWidgetAbstract
         $group = max(1, intval($params->get(self::$key . 'group')));
 
         $orientation = self::getOrientationByPosition($params->get(self::$key . 'position-mode'), $params->get(self::$key . 'position-area'), $params->get(self::$key . 'orientation'));
-        if($orientation == 'auto'){
+        if ($orientation == 'auto') {
             $orientation = 'vertical';
         }
-        $slides      = N2Html::openTag('table');
+        $slides = N2Html::openTag('table', array('class' => 'n2-ow'));
 
         $containerStyle    = '';
         $captionClass      = 'n2-caption-' . $captionPlacement;
@@ -149,6 +158,18 @@ class N2SSPluginWidgetThumbnailDefault extends N2SSPluginWidgetAbstract
         $image = '';
         $rows  = array();
         $i     = 0;
+        
+        $thumbnailCSS = array('background-size', 'background-repeat', 'background-position');                
+        $thumbnailStyle = json_decode(base64_decode($params->get('widget-thumbnail-style-slides')));
+        $extraCSS = $thumbnailStyle->data[0]->extra;
+        $thumbnailCode = '';
+        foreach($thumbnailCSS AS $css){
+          $currentCode = self::getStringBetween($extraCSS, $css.':',';');
+          if(!empty($currentCode)){
+            $thumbnailCode .= $css.':'.$currentCode.';';
+          }
+        }
+        
         foreach ($slider->slides AS $slide) {
             $active = '';
             if ($slider->_activeSlide == $i) {
@@ -163,11 +184,11 @@ class N2SSPluginWidgetThumbnailDefault extends N2SSPluginWidgetAbstract
                 $rows[$row] = array();
             }
 
-            if ($showImage) {
+            if ($showImage) {                
                 $image = N2Html::tag('div', array(
                     'class' => 'n2-ss-thumb-image',
-                    'style' => "background-image: URL('" . $slide->getThumbnail() . "'); width: {$width}px; height: {$height}px;"
-                ), '');
+                    'style' => "background-image: URL('" . $slide->getThumbnail() . "'); width: {$width}px; height: {$height}px; " . $thumbnailCode
+                ), $slide->getThumbnailTypeHTML());
             }
 
             $inner = '';
@@ -241,10 +262,10 @@ class N2SSPluginWidgetThumbnailDefault extends N2SSPluginWidgetAbstract
         $showArrow = intval($slider->params->get(self::$key . 'arrow', 1));
         if ($showArrow) {
             $previous = N2Html::image('data:image/svg+xml;base64,' . base64_encode(N2Filesystem::readFile(N2ImageHelper::fixed('$ss$/plugins/widgetthumbnail/default/default/thumbnail-up-arrow.svg', true))), '', array(
-                'class' => 'nextend-thumbnail-button nextend-thumbnail-previous'
+                'class' => 'nextend-thumbnail-button nextend-thumbnail-previous n2-ow'
             ));
             $next     = N2Html::image('data:image/svg+xml;base64,' . base64_encode(N2Filesystem::readFile(N2ImageHelper::fixed('$ss$/plugins/widgetthumbnail/default/default/thumbnail-down-arrow.svg', true))), '', array(
-                'class' => 'nextend-thumbnail-button nextend-thumbnail-next n2-active'
+                'class' => 'nextend-thumbnail-button nextend-thumbnail-next n2-ow n2-active'
             ));
         }
 

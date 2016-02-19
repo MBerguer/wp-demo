@@ -79,7 +79,7 @@ class  N2SmartSliderLayer
         }
 
         $attributes = array(
-            'class'           => 'n2-ss-layer',
+            'class'           => 'n2-ss-layer' . (empty($layer['class']) ? '' : ' ' . $layer['class']),
             'style'           => 'z-index:' . $zIndex . ';overflow:' . $cropStyle . ';' . $style . ';',
             'data-animations' => base64_encode(json_encode($layer['animations']))
         );

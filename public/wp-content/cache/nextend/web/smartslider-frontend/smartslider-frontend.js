@@ -1,4 +1,9 @@
 (function ($, scope, undefined) {
+
+    var isRetina = (function () {
+        return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)').matches)) || (window.devicePixelRatio && window.devicePixelRatio >= 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+    })();
+
     function NextendSmartSliderBackgroundImages(slider) {
         this.device = null;
 
@@ -179,9 +184,25 @@
         }
 
         this.hash = element.data('hash');
+
         this.desktopSrc = element.data('desktop');
         this.tabletSrc = element.data('tablet');
         this.mobileSrc = element.data('mobile');
+
+        if (isRetina) {
+            var retina = element.data('desktop-retina');
+            if (retina) {
+                this.desktopSrc = retina;
+            }
+            retina = element.data('tablet-retina');
+            if (retina) {
+                this.tabletSrc = retina;
+            }
+            retina = element.data('mobile-retina');
+            if (retina) {
+                this.mobileSrc = retina;
+            }
+        }
         var opacity = element.data('opacity');
         if (opacity >= 0 && opacity < 1) {
             this.opacity = opacity;
@@ -272,6 +293,11 @@
         this.notListenImageManager();
         this.desktopSrc = src;
         this.hash = md5(src);
+
+        if (newMode == 'default') {
+            newMode = nextend.smartSlider.slideBackgroundMode;
+        }
+
         this.change(src, alt, newMode);
 
         if (src != '') {
@@ -529,41 +555,89 @@
 })(n2, window);
 (function ($, scope, undefined) {
 
-    function NextendSmartSliderAbstract(sliderElement, parameters) {
+    $.fn.waitUntilExists = function (handler, shouldRunHandlerOnce, isChild) {
+        var found = 'found';
+        var $this = $(this.selector);
+        var $elements = $this.not(function () {
+            return $(this).data(found);
+        }).each(handler).data(found, true);
+
+        if (!isChild) {
+            (window.waitUntilExists_Intervals = window.waitUntilExists_Intervals || {})[this.selector] =
+                window.setInterval(function () {
+                    $this.waitUntilExists(handler, shouldRunHandlerOnce, true);
+                }, 500);
+        } else if (shouldRunHandlerOnce && $elements.length) {
+            window.clearInterval(window.waitUntilExists_Intervals[this.selector]);
+        }
+        return $this;
+    }
+
+    function NextendSmartSliderAbstract(elementID, parameters) {
         this.startedDeferred = $.Deferred();
 
-        var id = sliderElement.attr('id');
+        if (elementID instanceof n2) {
+            elementID = '#' + elementID.attr('id');
+        }
+
+        var id = elementID.substr(1);
+
         if (window[id] && window[id] instanceof NextendSmartSliderAbstract) {
             return false;
         }
+
         // Register our object to a global variable
         window[id] = this;
 
-        // Store them as we might need to change them back
-        this.nextCarousel = this.next;
-        this.previousCarousel = this.previous;
+        $(elementID).waitUntilExists($.proxy(function () {
+            var sliderElement = $(elementID);
 
-        if (sliderElement.prop('tagName') == 'SCRIPT') {
-            var dependency = sliderElement.data('dependency'),
-                rocketLoad = $.proxy(function () {
-                    var rocketSlider = $(sliderElement.html().replace(/<_s_c_r_i_p_t/g, '<script').replace(/<_\/_s_c_r_i_p_t/g, '</script'));
-                    sliderElement.replaceWith(rocketSlider);
-                    this.postInit(id, $('#' + id), parameters);
-                    $(window).triggerHandler('n2Rocket', [this.sliderElement]);
-                }, this);
-            if ($('#n2-ss-' + dependency).length) {
-                n2ss.ready(dependency, $.proxy(function (slider) {
-                    slider.ready(rocketLoad);
-                }, this));
+            // Store them as we might need to change them back
+            this.nextCarousel = this.next;
+            this.previousCarousel = this.previous;
+
+            if (sliderElement.prop('tagName') == 'SCRIPT') {
+                var dependency = sliderElement.data('dependency'),
+                    delay = sliderElement.data('delay'),
+                    rocketLoad = $.proxy(function () {
+                        var rocketSlider = $(sliderElement.html().replace(/<_s_c_r_i_p_t/g, '<script').replace(/<_\/_s_c_r_i_p_t/g, '</script'));
+                        sliderElement.replaceWith(rocketSlider);
+                        this.postInit(id, $(elementID), parameters);
+                        $(window).triggerHandler('n2Rocket', [this.sliderElement]);
+                    }, this);
+                if (dependency && $('#n2-ss-' + dependency).length) {
+                    n2ss.ready(dependency, $.proxy(function (slider) {
+                        slider.ready(rocketLoad);
+                    }, this));
+                } else if (delay) {
+                    setTimeout(rocketLoad, delay);
+                } else {
+                    rocketLoad();
+                }
             } else {
-                rocketLoad();
+                this.postInit(id, sliderElement, parameters);
             }
-        } else {
-            this.postInit(id, sliderElement, parameters);
-        }
-    }
+        }, this), true);
+    };
 
     NextendSmartSliderAbstract.prototype.postInit = function (id, sliderElement, parameters) {
+        if (parameters.isDelayed) {
+            setTimeout($.proxy(this._postInit, this, id, sliderElement, parameters), 200);
+        } else {
+            this._postInit(id, sliderElement, parameters);
+        }
+    };
+
+    NextendSmartSliderAbstract.prototype._postInit = function (id, sliderElement, parameters) {
+        var hasDimension = sliderElement.is(':visible');
+        if (hasDimension) {
+            this.__postInit(id, sliderElement, parameters);
+        } else {
+            setTimeout($.proxy(this._postInit, this, id, sliderElement, parameters), 200);
+        }
+    };
+
+    NextendSmartSliderAbstract.prototype.__postInit = function (id, sliderElement, parameters) {
         this.killed = false;
         this.isAdmin = false;
         this.currentSlideIndex = 0;
@@ -717,6 +791,14 @@
                 var el = $(el).on('click', function () {
                     eval(el.data('click'));
                 }).css('cursor', 'pointer');
+            });
+
+            this.sliderElement.find('[n2middleclick]').on('mousedown', function (e) {
+                var el = $(this);
+                if (e.which == 2 || e.which == 4) {
+                    e.preventDefault();
+                    eval(el.attr('n2middleclick'));
+                }
             });
 
             this.sliderElement.find('[data-mouseenter]').each(function (i, el) {
@@ -1041,6 +1123,13 @@
 
     };
 
+    NextendSmartSliderAbstract.prototype.revertTo = function (nextSlideIndex, originalNextSlideIndex) {
+        this.unsetActiveSlide(this.slides.eq(originalNextSlideIndex));
+        this.setActiveSlide(this.slides.eq(nextSlideIndex));
+        this.currentSlideIndex = nextSlideIndex;
+        this.sliderElement.trigger('sliderSwitchTo', [nextSlideIndex, this.getRealIndex(nextSlideIndex)]);
+    }
+
     NextendSmartSliderAbstract.prototype.__getActiveSlideIndex = function () {
         var index = this.slides.index(this.slides.filter('.n2-ss-slide-active'));
         if (index === -1) {
@@ -1069,21 +1158,23 @@
                 this.callOnSlide(currentSlide, 'playOut');
             }, this));
         }
-        this.sliderElement.on('mainAnimationStart', $.proxy(this.onMainAnimationStartSyncLayers, this, this.parameters.layerMode));
 
+
+        this.sliderElement.on('mainAnimationStart', $.proxy(this.onMainAnimationStartSyncLayers, this, this.parameters.layerMode))
+            .on('reverseModeEnabled', $.proxy(this.onMainAnimationStartSyncLayersReverse, this, this.parameters.layerMode));
     };
 
     NextendSmartSliderAbstract.prototype.onMainAnimationStartSyncLayers = function (layerMode, e, animation, previousSlideIndex, currentSlideIndex) {
         var inSlide = this.slides.eq(currentSlideIndex),
             outSlide = this.slides.eq(previousSlideIndex);
         if (layerMode.inAnimation == 'mainInStart') {
-            inSlide.on('mainAnimationStartIn.layers', $.proxy(function () {
-                inSlide.off('mainAnimationStartIn.layers');
+            inSlide.one('mainAnimationStartIn.layers', $.proxy(function () {
+                inSlide.off('mainAnimationStartInCancel.layers');
                 this.callOnSlide(inSlide, 'playIn');
             }, this));
         } else if (layerMode.inAnimation == 'mainInEnd') {
-            inSlide.on('mainAnimationCompleteIn.layers', $.proxy(function () {
-                inSlide.off('mainAnimationCompleteIn.layers');
+            inSlide.one('mainAnimationCompleteIn.layers', $.proxy(function () {
+                inSlide.off('mainAnimationStartInCancel.layers');
                 this.callOnSlide(inSlide, 'playIn');
             }, this));
         }
@@ -1098,6 +1189,30 @@
                 }
             }, this));
         }
+
+        inSlide.one('mainAnimationStartInCancel.layers', function () {
+            inSlide.off('mainAnimationStartIn.layers');
+            inSlide.off('mainAnimationCompleteIn.layers');
+        });
+    };
+
+    NextendSmartSliderAbstract.prototype.onMainAnimationStartSyncLayersReverse = function (layerMode, e, reverseSlideIndex) {
+        var reverseSlide = this.slides.eq(reverseSlideIndex);
+        if (layerMode.inAnimation == 'mainInStart') {
+            reverseSlide.one('mainAnimationStartIn.layers', $.proxy(function () {
+                this.callOnSlide(reverseSlide, 'playIn');
+            }, this));
+        } else if (layerMode.inAnimation == 'mainInEnd') {
+            reverseSlide.one('mainAnimationCompleteIn.layers', $.proxy(function () {
+                this.sliderElement.off('mainAnimationComplete.layers');
+                this.callOnSlide(reverseSlide, 'playIn');
+            }, this));
+        }
+
+        this.sliderElement.one('mainAnimationComplete.layers', function () {
+            reverseSlide.off('mainAnimationStartIn.layers');
+            reverseSlide.off('mainAnimationCompleteIn.layers');
+        });
     };
 
     NextendSmartSliderAbstract.prototype.callOnSlide = function (slide, functionName) {
@@ -1453,6 +1568,10 @@
 
     };
 
+    NextendSmartSliderBackgroundAnimationAbstract.prototype.revertEnded = function () {
+
+    };
+
     NextendSmartSliderBackgroundAnimationAbstract.prototype.placeNextImage = function () {
         this.clonedImages.nextImage = this.original.nextImage.clone().css({
             position: 'absolute',
@@ -1559,6 +1678,11 @@
 
     NextendSmartSliderBackgroundAnimationFluxAbstract.prototype.ended = function () {
         this.original.currentImage.css('opacity', 1);
+        this.containerElement.html('');
+    };
+
+    NextendSmartSliderBackgroundAnimationFluxAbstract.prototype.revertEnded = function () {
+        this.original.nextImage.css('opacity', 1);
         this.containerElement.html('');
     };
 
@@ -2469,6 +2593,9 @@
 
         this.state = 'ended';
         this.isTouch = false;
+        this.isReverseAllowed = true;
+        this.isReverseEnabled = false;
+        this.reverseSlideIndex = -1;
 
         this.slider = slider;
 
@@ -2484,10 +2611,122 @@
         this.timeline = new NextendTimeline({
             paused: true
         });
+
+        this.sliderElement.on('mainAnimationStart', $.proxy(function (e, animation, currentSlideIndex, nextSlideIndex) {
+            this.currentSlideIndex = currentSlideIndex;
+            this.nextSlideIndex = nextSlideIndex;
+        }, this));
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.enableReverseMode = function () {
+        this.isReverseEnabled = true;
+
+        this.reverseTimeline = new NextendTimeline({
+            paused: true
+        });
+
+        this.sliderElement.triggerHandler('reverseModeEnabled', this.reverseSlideIndex);
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.disableReverseMode = function () {
+        this.isReverseEnabled = false;
     };
 
     NextendSmartSliderMainAnimationAbstract.prototype.setTouch = function (direction) {
         this.isTouch = direction;
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.setTouchProgress = function (progress) {
+        if (this.isReverseEnabled) {
+            this._setTouchProgressWithReverse(progress);
+        } else {
+            this._setTouchProgress(progress);
+        }
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype._setTouchProgress = function (progress) {
+        if (this.state != 'ended') {
+            if (progress <= 0) {
+                this.timeline.progress(Math.max(progress, 0.000001), false);
+            } else if (progress >= 0 && progress <= 1) {
+                this.timeline.progress(progress);
+            }
+        }
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype._setTouchProgressWithReverse = function (progress) {
+        if (progress == 0) {
+            this.reverseTimeline.progress(0);
+            this.timeline.progress(progress, false);
+        } else if (progress >= 0 && progress <= 1) {
+            this.reverseTimeline.progress(0);
+            this.timeline.progress(progress);
+        } else if (progress < 0 && progress >= -1) {
+            this.timeline.progress(0);
+            this.reverseTimeline.progress(Math.abs(progress));
+        }
+    };
+
+
+    NextendSmartSliderMainAnimationAbstract.prototype.setTouchEnd = function (hasDirection, progress, duration) {
+        if (this.state != 'ended') {
+            if (this.isReverseEnabled) {
+                this._setTouchEndWithReverse(hasDirection, progress, duration);
+            } else {
+                this._setTouchEnd(hasDirection, progress, duration);
+            }
+        }
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype._setTouchEnd = function (hasDirection, progress, duration) {
+        if (hasDirection && progress > 0) {
+            this.fixTouchDuration(this.timeline, progress, duration);
+            this.timeline.play();
+        } else {
+            this.revertCB(this.timeline);
+            this.fixTouchDuration(this.timeline, 1 - progress, duration);
+            this.timeline.reverse();
+
+            this.willRevertTo(this.currentSlideIndex, this.nextSlideIndex);
+        }
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype._setTouchEndWithReverse = function (hasDirection, progress, duration) {
+        if (hasDirection) {
+            if (progress < 0 && this.reverseTimeline.totalDuration() > 0) {
+                this.fixTouchDuration(this.reverseTimeline, progress, duration);
+                this.reverseTimeline.play();
+
+                this.willRevertTo(this.reverseSlideIndex, this.nextSlideIndex);
+            } else {
+
+                this.willCleanSlideIndex(this.reverseSlideIndex);
+                this.fixTouchDuration(this.timeline, progress, duration);
+                this.timeline.play();
+            }
+        } else {
+            if (progress < 0) {
+                this.revertCB(this.reverseTimeline);
+                this.fixTouchDuration(this.reverseTimeline, 1 - progress, duration);
+                this.reverseTimeline.reverse();
+            } else {
+                this.revertCB(this.timeline);
+                this.fixTouchDuration(this.timeline, 1 - progress, duration);
+                this.timeline.reverse();
+            }
+
+            this.willCleanSlideIndex(this.reverseSlideIndex);
+
+            this.willRevertTo(this.currentSlideIndex, this.nextSlideIndex);
+        }
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.fixTouchDuration = function (timeline, progress, duration) {
+        var totalDuration = timeline.totalDuration(),
+            modifiedDuration = Math.max(totalDuration / 3, Math.min(totalDuration, duration / Math.abs(progress) / 1000));
+        if (modifiedDuration != totalDuration) {
+            timeline.totalDuration(modifiedDuration);
+        }
     };
 
     NextendSmartSliderMainAnimationAbstract.prototype.getState = function () {
@@ -2523,6 +2762,11 @@
         this.timeline.paused(true);
         this.timeline.eventCallback('onStart', this.onChangeToStart, [currentSlideIndex, nextSlideIndex, isSystem], this);
         this.timeline.eventCallback('onComplete', this.onChangeToComplete, [currentSlideIndex, nextSlideIndex, isSystem], this);
+        this.timeline.eventCallback('onReverseComplete', null);
+
+        this.revertCB = $.proxy(function (timeline) {
+            timeline.eventCallback('onReverseComplete', this.onReverseChangeToComplete, [nextSlideIndex, currentSlideIndex, isSystem], this);
+        }, this);
 
         if (this.slider.parameters.dynamicHeight) {
             var tl = new NextendTimeline();
@@ -2543,6 +2787,32 @@
         } else {
             this.slider.callOnSlide(currentSlide, 'onOutAnimationsPlayed');
         }
+    };
+
+
+    NextendSmartSliderMainAnimationAbstract.prototype.willRevertTo = function (slideIndex, originalNextSlideIndex) {
+
+        this.sliderElement.triggerHandler('mainAnimationWillRevertTo', [slideIndex, originalNextSlideIndex]);
+
+        this.sliderElement.one('mainAnimationComplete', $.proxy(this.revertTo, this, slideIndex, originalNextSlideIndex));
+    };
+
+
+    NextendSmartSliderMainAnimationAbstract.prototype.revertTo = function (slideIndex, originalNextSlideIndex) {
+        this.slider.revertTo(slideIndex, originalNextSlideIndex);
+
+        // Cancel the pre-initialized layer animations on the original next slide.
+        this.slider.slides.eq(originalNextSlideIndex).triggerHandler('mainAnimationStartInCancel');
+    };
+
+
+    NextendSmartSliderMainAnimationAbstract.prototype.willCleanSlideIndex = function (slideIndex) {
+
+        this.sliderElement.one('mainAnimationComplete', $.proxy(this.cleanSlideIndex, this, slideIndex));
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.cleanSlideIndex = function () {
+
     };
 
     /**
@@ -2574,9 +2844,9 @@
     NextendSmartSliderMainAnimationAbstract.prototype.onChangeToComplete = function (previousSlideIndex, currentSlideIndex, isSystem) {
         var parameters = [this, previousSlideIndex, currentSlideIndex, isSystem];
 
-        // When the animation done, clear the timeline
-        this.timeline.clear();
-        this.timeline.timeScale(1);
+        this.clearTimelines();
+
+        this.disableReverseMode();
 
         this.slider.slides.eq(previousSlideIndex).trigger('mainAnimationCompleteOut', parameters);
         this.slider.slides.eq(currentSlideIndex).trigger('mainAnimationCompleteIn', parameters);
@@ -2586,6 +2856,21 @@
         n2c.log('Event: mainAnimationComplete: ', parameters, '{NextendSmartSliderMainAnimationAbstract}, previousSlideIndex, currentSlideIndex, isSystem');
         this.sliderElement.trigger('mainAnimationComplete', parameters);
     };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.onReverseChangeToComplete = function (previousSlideIndex, currentSlideIndex, isSystem) {
+        NextendSmartSliderMainAnimationAbstract.prototype.onChangeToComplete.apply(this, arguments);
+    };
+
+    NextendSmartSliderMainAnimationAbstract.prototype.clearTimelines = function () {
+        // When the animation done, clear the timeline
+        this.revertCB = function () {
+        };
+        this.timeline.clear();
+        this.timeline.timeScale(1);
+        //this.reverseTimeline.clear();
+        //this.reverseTimeline.timeScale(1);
+
+    }
 
     NextendSmartSliderMainAnimationAbstract.prototype.getEase = function () {
         if (this.isTouch) {
@@ -2597,7 +2882,6 @@
 })(n2, window);
 (function ($, scope, undefined) {
     function NextendSmartSliderControlAutoplay(slider, parameters) {
-        this._inited = false;
         this._paused = true;
         this._wait = false;
         this._disabled = false;
@@ -2668,6 +2952,8 @@
 
         if (this.parameters.start) {
             this.continueAutoplay();
+        } else {
+            this.pauseAutoplayExtraPlaying(null, 'autoplayButton');
         }
 
         sliderElement.on('mainAnimationStart.autoplay', $.proxy(this.onMainAnimationStart, this));
@@ -2734,6 +3020,9 @@
         sliderElement.on('autoplayExtraWait.autoplay', $.proxy(this.pauseAutoplayExtraPlaying, this));
         sliderElement.on('autoplayExtraContinue.autoplay', $.proxy(this.pauseAutoplayExtraPlayingEnded, this));
 
+
+        this.slider.sliderElement.on('mainAnimationComplete.autoplay', $.proxy(this.onMainAnimationComplete, this));
+
     };
 
     NextendSmartSliderControlAutoplay.prototype.enableProgress = function () {
@@ -2795,10 +3084,6 @@
         if ((this._paused || this._wait) && !this._disabled) {
             this._paused = false;
             this._wait = false;
-            if (!this._inited) {
-                this.slider.sliderElement.on('mainAnimationComplete.autoplay', $.proxy(this.onMainAnimationComplete, this));
-                this._inited = true;
-            }
             n2c.log('Event: autoplayStarted');
             this.slider.sliderElement.triggerHandler('autoplayStarted');
 
@@ -3018,7 +3303,7 @@
             }
             setTimeout($.proxy(function () {
                 this.preventScroll = false;
-            }, this), 400);
+            }, this), 90);
         } else {
             e.preventDefault();
         }
@@ -3102,7 +3387,7 @@
     "use strict";
     var pointer = window.navigator.pointerEnabled || window.navigator.msPointerEnabled;
 
-    function NextendSmartSliderControlTouch(slider, direction, parameters) {
+    function NextendSmartSliderControlTouch(slider, _direction, parameters) {
         this.currentAnimation = null;
         this.slider = slider;
 
@@ -3114,23 +3399,85 @@
 
         this.swipeElement = this.slider.sliderElement.find('> div').eq(0);
 
-        if (direction == 'vertical') {
+        if (_direction == 'vertical') {
             this.setVertical();
-        } else if (direction == 'horizontal') {
+        } else if (_direction == 'horizontal') {
             this.setHorizontal();
         }
 
-        this.swipeElement.addClass('unselectable').swipe({
-            axis: this._direction.axis,
-            threshold: 10,
-            preventDefaultEvents: false,
-            triggerOnTouchLeave: true,
-            fallbackToMouseEvents: this.parameters.fallbackToMouseEvents,
-            swipeStatus: $.proxy(this.onSwipeStatus, this),
-            tap: $.proxy(this.onTap, this)
-        }).on('dragstart', function (e) {
-            e.preventDefault();
-        });
+        var initTouch = $.proxy(function () {
+            var that = this;
+            N2EventBurrito(this.swipeElement.get(0), {
+                mouse: this.parameters.fallbackToMouseEvents,
+                axis: _direction == 'horizontal' ? 'x' : 'y',
+                start: function (event, start) {
+                },
+                move: function (event, start, diff, speed) {
+                    var direction = that._direction.measure(diff);
+                    if (direction != 'unknown' && that.currentAnimation === null) {
+                        if (that._animation.state != 'ended') {
+                            // skip the event as the current animation is still playing
+                            return;
+                        }
+                        that.distance = [0];
+                        that.swipeElement.addClass('n2-grabbing');
+
+                        // Force the main animation into touch mode horizontal/vertical
+                        that._animation.setTouch(that._direction.axis);
+
+                        that.currentAnimation = {
+                            direction: direction,
+                            percent: 0
+                        };
+                        var isChangePossible = that.slider[that._direction[direction]](false);
+                        if (!isChangePossible) {
+                            return false;
+                        }
+                    }
+
+                    if (that.currentAnimation) {
+                        var realDistance = that._direction.get(diff, that.currentAnimation.direction);
+                        that.logDistance(realDistance);
+                        if (that.currentAnimation.percent < 1) {
+                            var percent = Math.max(-0.99999, Math.min(0.99999, realDistance / that.slider.dimensions.slider[that._property]));
+                            that.currentAnimation.percent = percent;
+                            that._animation.setTouchProgress(percent);
+                        }
+                    }
+                    return true;
+                },
+                end: function (event, start, diff, speed) {
+                    if (that.currentAnimation !== null) {
+                        var targetDirection = that.measureRealDirection();
+                        var progress = that._animation.timeline.progress();
+                        if (progress != 1) {
+
+                            that._animation.setTouchEnd(targetDirection, that.currentAnimation.percent, diff.time);
+                        }
+                        that.swipeElement.removeClass('n2-grabbing');
+
+                        // Switch back the animation into the original mode when our touch is ended
+                        that._animation.setTouch(false);
+                        that.currentAnimation = null;
+                    }
+
+                    if (Math.abs(diff.x) < 10 && Math.abs(diff.y) < 10) {
+                        that.onTap(event);
+                    }
+                }
+            });
+        }, this);
+
+        if (navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+            var parent = this.swipeElement.parent();
+            if (parent.css('opacity') != 1) {
+                this.swipeElement.parent().on('transitionend', initTouch);
+            } else {
+                initTouch();
+            }
+        } else {
+            initTouch();
+        }
 
         if (!this.parameters.fallbackToMouseEvents) {
             this.swipeElement.on('click', $.proxy(this.onTap, this));
@@ -3152,7 +3499,17 @@
             right: 'previous',
             up: null,
             down: null,
-            axis: 'horizontal'
+            axis: 'horizontal',
+            measure: function (diff) {
+                if (diff.x == 0) return 'unknown';
+                return diff.x < 0 ? 'left' : 'right';
+            },
+            get: function (diff, direction) {
+                if (direction == 'left') {
+                    return -diff.x;
+                }
+                return diff.x;
+            }
         };
 
         if (pointer) {
@@ -3170,7 +3527,17 @@
             right: null,
             up: 'next',
             down: 'previous',
-            axis: 'vertical'
+            axis: 'vertical',
+            measure: function (diff) {
+                if (diff.y == 0) return 'unknown';
+                return diff.y < 0 ? 'up' : 'down';
+            },
+            get: function (diff, direction) {
+                if (direction == 'up') {
+                    return -diff.y;
+                }
+                return diff.y;
+            }
         };
 
         if (pointer) {
@@ -3179,60 +3546,24 @@
         }
     };
 
-    NextendSmartSliderControlTouch.prototype.onSwipeStatus = function (event, phase, direction, distance, duration, fingers) {
-        if (distance > 10 && direction != null && this._direction[direction] !== null) {
-            event.preventDefault();
-            if (this.currentAnimation === null) {
-                if (this._animation.state != 'ended') {
-                    // skip the event as the current animation is still playing
-                    return;
-                }
-                this.swipeElement.addClass('n2-grabbing');
-
-                // Force the main animation into touch mode horizontal/vertical
-                this._animation.setTouch(this._direction.axis);
-
-                this.currentAnimation = {
-                    direction: direction,
-                    percent: 0
-                };
-                this.slider[this._direction[direction]](false);
-
-            }
-            if (this.currentAnimation.percent < 1 && this.currentAnimation.direction == direction) {
-                var percent = distance / this.slider.dimensions.slider[this._property];
-                if (percent <= 1) {
-                    this.currentAnimation.percent = percent;
-                    this._animation.timeline.progress(percent);
-                }
-            }
+    NextendSmartSliderControlTouch.prototype.logDistance = function (realDistance) {
+        if (this.distance.length > 3) {
+            this.distance.shift();
         }
+        this.distance.push(realDistance);
+    };
 
-        /**
-         * The direction can be different for the last "action", so this block can't be in the previous if statement
-         */
-        if (this.currentAnimation !== null && (phase == "end" || phase == "cancel")) {
-            var progress = this._animation.timeline.progress();
-            if (progress != 1) {
-                var totalDuration = this._animation.timeline.totalDuration(),
-                    modifiedDuration = Math.max(totalDuration / 3, Math.min(totalDuration, duration / progress / 1000));
-                if (modifiedDuration != totalDuration) {
-                    this._animation.timeline.totalDuration(modifiedDuration);
-                }
-                this._animation.timeline.play();
-            }
-            this.swipeElement.removeClass('n2-grabbing');
-
-            // Switch back the animation into the original mode when our touch is ended
-            this._animation.setTouch(false);
-            this.currentAnimation = null;
+    NextendSmartSliderControlTouch.prototype.measureRealDirection = function () {
+        var firstValue = this.distance[0],
+            lastValue = this.distance[this.distance.length - 1];
+        if ((lastValue >= 0 && firstValue > lastValue) || (lastValue < 0 && firstValue < lastValue)) {
+            return 0;
         }
+        return 1;
     };
 
     NextendSmartSliderControlTouch.prototype.onTap = function (e) {
-        if ((e.type != 'mouseup' || e.which == 1) && e.type != 'mouseout') {
-            $(e.target).trigger('n2click');
-        }
+        $(e.target).trigger('n2click');
     };
 
     scope.NextendSmartSliderControlTouch = NextendSmartSliderControlTouch;
@@ -3777,8 +4108,15 @@
             mobilePortraitScreenWidth: 440,
             tabletLandscapeScreenWidth: 1024,
             mobileLandscapeScreenWidth: 740,
-            orientationMode: 'width_and_height'
+            orientationMode: 'width_and_height',
+            scrollFix: 0,
+            overflowHiddenPage: 0
         }, parameters);
+
+
+        if (!this.slider.isAdmin && this.parameters.overflowHiddenPage) {
+            $('html, body').css('overflow', 'hidden');
+        }
 
         if (this.parameters.orientationMode == 'width') {
             this.orientationMode = NextendSmartSliderResponsive.OrientationMode.SCREEN_WIDTH_ONLY;
@@ -3854,6 +4192,22 @@
         this.onResize();
         if (this.parameters.onResizeEnabled || this.parameters.type == 'adaptive') {
             $(window).on('resize', $.proxy(this.onResize, this));
+
+
+            this.sliderElement.on('SliderInternalResize', $.proxy(this.onResize, this));
+
+            if (this.parameters.scrollFix) {
+                try {
+                    var that = this,
+                        iframe = $('<iframe sandbox="allow-same-origin" style="height: 0; background-color: transparent; margin: 0; padding: 0; overflow: hidden; border-width: 0; position: absolute; width: 100%;"/>')
+                            .on('load', function (e) {
+                                $(e.target.contentWindow ? e.target.contentWindow : e.target.contentDocument.defaultView).on('resize', function () {
+                                    that.sliderElement.triggerHandler('SliderInternalResize');
+                                });
+                            }).insertBefore(this.containerElement);
+                } catch (e) {
+                }
+            }
         }
     };
 
@@ -4288,15 +4642,8 @@
     };
 
     NextendSmartSliderResponsive.prototype._buildRatios = function (ratios, dynamicHeight, nextSlideIndex) {
-        if (this.parameters.minimumHeightRatio > 0) {
-            ratios.h = Math.max(ratios.h, this.parameters.minimumHeightRatio);
-        }
 
         var deviceModeOrientation = this.getDeviceModeOrientation();
-
-        if (this.parameters.maximumHeightRatio[deviceModeOrientation] > 0) {
-            ratios.h = Math.min(ratios.h, this.parameters.maximumHeightRatio[deviceModeOrientation]);
-        }
 
         if (this.parameters.maximumSlideWidthRatio[deviceModeOrientation] > 0 && ratios.slideW > this.parameters.maximumSlideWidthRatio[deviceModeOrientation]) {
             ratios.slideW = this.parameters.maximumSlideWidthRatio[deviceModeOrientation];
@@ -4307,10 +4654,17 @@
         var verticalRatioModifier = this.parameters.verticalRatioModifiers[deviceModeOrientation];
         ratios.slideH *= verticalRatioModifier;
         if (this.parameters.type == 'fullpage') {
-            if (ratios.slideH > ratios.h) {
-                ratios.slideW /= ratios.slideH / ratios.h;
+
+            if (this.parameters.minimumHeightRatio > 0) {
+                ratios.h = Math.max(ratios.h, this.parameters.minimumHeightRatio);
             }
+
+            if (this.parameters.maximumHeightRatio[deviceModeOrientation] > 0) {
+                ratios.h = Math.min(ratios.h, this.parameters.maximumHeightRatio[deviceModeOrientation]);
+            }
+
             ratios.slideH = Math.min(ratios.slideH, ratios.h);
+            ratios.slideH = ratios.slideW = Math.min(ratios.slideW, ratios.slideH);
 
             if (this.slider.isAdmin) {
                 ratios.w = ratios.slideW;
@@ -4318,23 +4672,35 @@
             }
         } else {
             ratios.h *= verticalRatioModifier;
+
+            if (this.parameters.minimumHeightRatio > 0) {
+                ratios.h = Math.max(ratios.h, this.parameters.minimumHeightRatio);
+            }
+
+            if (this.parameters.maximumHeightRatio[deviceModeOrientation] > 0) {
+                ratios.h = Math.min(ratios.h, this.parameters.maximumHeightRatio[deviceModeOrientation]);
+            }
+
             ratios.slideH = Math.min(ratios.slideH, ratios.h);
-            //if (this.parameters.type == 'showcase') {
-            // Constrain slide ratio in showcase type
             ratios.slideW = ratios.slideH / verticalRatioModifier;
-            //}
-        }
 
-        var slideIndex = this.slider.currentSlideIndex;
-        if (typeof nextSlideIndex !== 'undefined') {
-            slideIndex = nextSlideIndex;
-        }
+            if (this.slider.type == "showcase") {
+                ratios.slideW = Math.min(ratios.slideW, ratios.w);
+                ratios.slideH = Math.min(ratios.slideW, ratios.slideH);
+            }
 
-        if (dynamicHeight) {
-            var backgroundRatio = this.slider.backgroundImages.backgroundImages[slideIndex].responsiveElement.relativeRatio;
-            if (backgroundRatio != -1) {
-                ratios.slideH *= backgroundRatio;
-                ratios.h *= backgroundRatio;
+            if (dynamicHeight) {
+
+                var slideIndex = this.slider.currentSlideIndex;
+                if (typeof nextSlideIndex !== 'undefined') {
+                    slideIndex = nextSlideIndex;
+                }
+
+                var backgroundRatio = this.slider.backgroundImages.backgroundImages[slideIndex].responsiveElement.relativeRatio;
+                if (backgroundRatio != -1) {
+                    ratios.slideH *= backgroundRatio;
+                    ratios.h *= backgroundRatio;
+                }
             }
         }
 
@@ -4879,7 +5245,7 @@
             this.parameters.autoplay = 0;
         }
 
-        if (this.parameters.autoplay == 1 || !hasImage) {
+        if (this.parameters.autoplay == 1 || !hasImage || n2const.isIOS) {
             this.ready($.proxy(this.initVimeoPlayer, this));
         } else {
             $("#" + this.playerId).on('click', $.proxy(function () {
@@ -5038,7 +5404,7 @@
             this.parameters.autoplay = 0;
         }
 
-        if (this.parameters.autoplay == 1 || !hasImage) {
+        if (this.parameters.autoplay == 1 || !hasImage || n2const.isIOS) {
             this.ready($.proxy(this.initYoutubePlayer, this));
         } else {
             $("#" + this.playerId).on('click', $.proxy(function () {

@@ -199,16 +199,27 @@ abstract class N2SmartSliderAbstract
 
 
         $slider = str_replace('n2-ss-0', $this->elementId, $slider);
+        if (!N2Platform::$isAdmin) {
+            $rocketAttributes = '';
+            $dependency       = max(0, intval($this->params->get('dependency')));
+            if ($dependency) {
+                $rocketAttributes .= 'data-dependency="' . $dependency . '"';
+            } else {
+                $delay = max(0, intval($this->params->get('delay'), 0));
+                if($delay > 0){
+                    $rocketAttributes .= 'data-delay="' . $delay . '"';
+                }
+            }
 
-        $dependency = intval($this->params->get('dependency'));
-        if (!N2Platform::$isAdmin && $dependency > 0) {
-            $slider = '<script id="' . $this->elementId . '" data-dependency="' . $dependency . '" type="rocket/slider">' . str_replace(array(
-                    '<script',
-                    '</script'
-                ), array(
-                    '<_s_c_r_i_p_t',
-                    '<_/_s_c_r_i_p_t'
-                ), $slider) . '</script>';
+            if (!empty($rocketAttributes)) {
+                $slider = '<script id="' . $this->elementId . '" ' . $rocketAttributes . ' type="rocket/slider">' . str_replace(array(
+                        '<script',
+                        '</script'
+                    ), array(
+                        '<_s_c_r_i_p_t',
+                        '<_/_s_c_r_i_p_t'
+                    ), $slider) . '</script>';
+            }
         }
 
         $slider = $this->features->translateUrl->renderSlider($slider);

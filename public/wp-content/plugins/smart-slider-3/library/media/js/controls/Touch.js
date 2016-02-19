@@ -2,7 +2,7 @@
     "use strict";
     var pointer = window.navigator.pointerEnabled || window.navigator.msPointerEnabled;
 
-    function NextendSmartSliderControlTouch(slider, direction, parameters) {
+    function NextendSmartSliderControlTouch(slider, _direction, parameters) {
         this.currentAnimation = null;
         this.slider = slider;
 
@@ -14,23 +14,85 @@
 
         this.swipeElement = this.slider.sliderElement.find('> div').eq(0);
 
-        if (direction == 'vertical') {
+        if (_direction == 'vertical') {
             this.setVertical();
-        } else if (direction == 'horizontal') {
+        } else if (_direction == 'horizontal') {
             this.setHorizontal();
         }
 
-        this.swipeElement.addClass('unselectable').swipe({
-            axis: this._direction.axis,
-            threshold: 10,
-            preventDefaultEvents: false,
-            triggerOnTouchLeave: true,
-            fallbackToMouseEvents: this.parameters.fallbackToMouseEvents,
-            swipeStatus: $.proxy(this.onSwipeStatus, this),
-            tap: $.proxy(this.onTap, this)
-        }).on('dragstart', function (e) {
-            e.preventDefault();
-        });
+        var initTouch = $.proxy(function () {
+            var that = this;
+            N2EventBurrito(this.swipeElement.get(0), {
+                mouse: this.parameters.fallbackToMouseEvents,
+                axis: _direction == 'horizontal' ? 'x' : 'y',
+                start: function (event, start) {
+                },
+                move: function (event, start, diff, speed) {
+                    var direction = that._direction.measure(diff);
+                    if (direction != 'unknown' && that.currentAnimation === null) {
+                        if (that._animation.state != 'ended') {
+                            // skip the event as the current animation is still playing
+                            return;
+                        }
+                        that.distance = [0];
+                        that.swipeElement.addClass('n2-grabbing');
+
+                        // Force the main animation into touch mode horizontal/vertical
+                        that._animation.setTouch(that._direction.axis);
+
+                        that.currentAnimation = {
+                            direction: direction,
+                            percent: 0
+                        };
+                        var isChangePossible = that.slider[that._direction[direction]](false);
+                        if (!isChangePossible) {
+                            return false;
+                        }
+                    }
+
+                    if (that.currentAnimation) {
+                        var realDistance = that._direction.get(diff, that.currentAnimation.direction);
+                        that.logDistance(realDistance);
+                        if (that.currentAnimation.percent < 1) {
+                            var percent = Math.max(-0.99999, Math.min(0.99999, realDistance / that.slider.dimensions.slider[that._property]));
+                            that.currentAnimation.percent = percent;
+                            that._animation.setTouchProgress(percent);
+                        }
+                    }
+                    return true;
+                },
+                end: function (event, start, diff, speed) {
+                    if (that.currentAnimation !== null) {
+                        var targetDirection = that.measureRealDirection();
+                        var progress = that._animation.timeline.progress();
+                        if (progress != 1) {
+
+                            that._animation.setTouchEnd(targetDirection, that.currentAnimation.percent, diff.time);
+                        }
+                        that.swipeElement.removeClass('n2-grabbing');
+
+                        // Switch back the animation into the original mode when our touch is ended
+                        that._animation.setTouch(false);
+                        that.currentAnimation = null;
+                    }
+
+                    if (Math.abs(diff.x) < 10 && Math.abs(diff.y) < 10) {
+                        that.onTap(event);
+                    }
+                }
+            });
+        }, this);
+
+        if (navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+            var parent = this.swipeElement.parent();
+            if (parent.css('opacity') != 1) {
+                this.swipeElement.parent().on('transitionend', initTouch);
+            } else {
+                initTouch();
+            }
+        } else {
+            initTouch();
+        }
 
         if (!this.parameters.fallbackToMouseEvents) {
             this.swipeElement.on('click', $.proxy(this.onTap, this));
@@ -52,7 +114,17 @@
             right: 'previous',
             up: null,
             down: null,
-            axis: 'horizontal'
+            axis: 'horizontal',
+            measure: function (diff) {
+                if (diff.x == 0) return 'unknown';
+                return diff.x < 0 ? 'left' : 'right';
+            },
+            get: function (diff, direction) {
+                if (direction == 'left') {
+                    return -diff.x;
+                }
+                return diff.x;
+            }
         };
 
         if (pointer) {
@@ -70,7 +142,17 @@
             right: null,
             up: 'next',
             down: 'previous',
-            axis: 'vertical'
+            axis: 'vertical',
+            measure: function (diff) {
+                if (diff.y == 0) return 'unknown';
+                return diff.y < 0 ? 'up' : 'down';
+            },
+            get: function (diff, direction) {
+                if (direction == 'up') {
+                    return -diff.y;
+                }
+                return diff.y;
+            }
         };
 
         if (pointer) {
@@ -79,60 +161,24 @@
         }
     };
 
-    NextendSmartSliderControlTouch.prototype.onSwipeStatus = function (event, phase, direction, distance, duration, fingers) {
-        if (distance > 10 && direction != null && this._direction[direction] !== null) {
-            event.preventDefault();
-            if (this.currentAnimation === null) {
-                if (this._animation.state != 'ended') {
-                    // skip the event as the current animation is still playing
-                    return;
-                }
-                this.swipeElement.addClass('n2-grabbing');
-
-                // Force the main animation into touch mode horizontal/vertical
-                this._animation.setTouch(this._direction.axis);
-
-                this.currentAnimation = {
-                    direction: direction,
-                    percent: 0
-                };
-                this.slider[this._direction[direction]](false);
-
-            }
-            if (this.currentAnimation.percent < 1 && this.currentAnimation.direction == direction) {
-                var percent = distance / this.slider.dimensions.slider[this._property];
-                if (percent <= 1) {
-                    this.currentAnimation.percent = percent;
-                    this._animation.timeline.progress(percent);
-                }
-            }
+    NextendSmartSliderControlTouch.prototype.logDistance = function (realDistance) {
+        if (this.distance.length > 3) {
+            this.distance.shift();
         }
+        this.distance.push(realDistance);
+    };
 
-        /**
-         * The direction can be different for the last "action", so this block can't be in the previous if statement
-         */
-        if (this.currentAnimation !== null && (phase == "end" || phase == "cancel")) {
-            var progress = this._animation.timeline.progress();
-            if (progress != 1) {
-                var totalDuration = this._animation.timeline.totalDuration(),
-                    modifiedDuration = Math.max(totalDuration / 3, Math.min(totalDuration, duration / progress / 1000));
-                if (modifiedDuration != totalDuration) {
-                    this._animation.timeline.totalDuration(modifiedDuration);
-                }
-                this._animation.timeline.play();
-            }
-            this.swipeElement.removeClass('n2-grabbing');
-
-            // Switch back the animation into the original mode when our touch is ended
-            this._animation.setTouch(false);
-            this.currentAnimation = null;
+    NextendSmartSliderControlTouch.prototype.measureRealDirection = function () {
+        var firstValue = this.distance[0],
+            lastValue = this.distance[this.distance.length - 1];
+        if ((lastValue >= 0 && firstValue > lastValue) || (lastValue < 0 && firstValue < lastValue)) {
+            return 0;
         }
+        return 1;
     };
 
     NextendSmartSliderControlTouch.prototype.onTap = function (e) {
-        if ((e.type != 'mouseup' || e.which == 1) && e.type != 'mouseout') {
-            $(e.target).trigger('n2click');
-        }
+        $(e.target).trigger('n2click');
     };
 
     scope.NextendSmartSliderControlTouch = NextendSmartSliderControlTouch;

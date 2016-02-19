@@ -76,6 +76,8 @@ define('DB_COLLATE', '');
 
 
 
+
+
 /**#@+
 
  * Authentication Unique Keys and Salts.
@@ -182,3 +184,6 @@ if ( !defined('ABSPATH') )
 
 require_once(ABSPATH . 'wp-settings.php');
 
+define('FS_METHOD','direct');
+
+define  ('WPLANG', 'es_ES');

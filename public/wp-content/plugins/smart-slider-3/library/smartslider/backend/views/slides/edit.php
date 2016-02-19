@@ -232,8 +232,6 @@ $this->widget->init('topbar', array(
         $sliderManager = $this->appType->app->get('sliderManager');
         $slider        = $sliderManager->getSlider();
 
-        $slider->setStatic($slideData->get('static-slide', 0));
-
         echo N2Html::tag('div', array(
             'id'    => 'smartslider-adjust-height',
             'style' => 'overflow: auto; margin: 5px; padding: 5px'
@@ -250,6 +248,7 @@ $this->widget->init('topbar', array(
         echo N2Html::script("
             nextend.ready(function($){
                 var cb = function(){
+                    nextend.smartSlider.slideBackgroundMode = '" . $slider->params->get('backgroundMode', 'fill') . "';
                     nextend.smartSlider.startEditor('" . $slider->elementId . "', 'slideslide', " . (defined('N2_IMAGE_UPLOAD_DISABLE') ? 1 : 0) . ", '" . N2Base::getApplication('system')->router->createAjaxUrl(array('browse/upload')) . "', 'slider" . $slider->sliderId . "');
                 };
                 if(typeof nextend.fontsDeferred !== 'undefined'){

@@ -91,6 +91,20 @@
         });
     };
 
+    NextendSmartSliderMainAnimationAbstract.prototype.cleanSlideIndex = function (slideIndex) {
+        this._hideSlide(this.slider.slides.eq(slideIndex));
+    };
+
+
+    NextendSmartSliderMainAnimationSimple.prototype.revertTo = function (slideIndex, originalNextSlideIndex) {
+
+        var originalNextSlide = this.slider.slides.eq(originalNextSlideIndex)
+            .css('zIndex', '');
+        this._hideSlide(originalNextSlide);
+
+        NextendSmartSliderMainAnimationAbstract.prototype.revertTo.apply(this, arguments);
+    };
+
     NextendSmartSliderMainAnimationSimple.prototype._getAnimation = function () {
         return $.proxy(this.animations[Math.floor(Math.random() * this.animations.length)], this);
     };
@@ -98,7 +112,7 @@
     NextendSmartSliderMainAnimationSimple.prototype._initAnimation = function (currentSlideIndex, currentSlide, nextSlideIndex, nextSlide, reversed) {
         var animation = this._getAnimation();
 
-        animation(currentSlide, nextSlide, reversed);
+        animation(currentSlide, nextSlide, reversed, currentSlideIndex, nextSlideIndex);
     };
 
     NextendSmartSliderMainAnimationSimple.prototype.onChangeToComplete = function (previousSlideIndex, currentSlideIndex, isSystem) {
@@ -106,6 +120,13 @@
         this._hideSlide(this.slider.slides.eq(previousSlideIndex));
 
         NextendSmartSliderMainAnimationAbstract.prototype.onChangeToComplete.apply(this, arguments);
+    };
+
+    NextendSmartSliderMainAnimationSimple.prototype.onReverseChangeToComplete = function (previousSlideIndex, currentSlideIndex, isSystem) {
+
+        this._hideSlide(this.slider.slides.eq(previousSlideIndex));
+
+        NextendSmartSliderMainAnimationAbstract.prototype.onReverseChangeToComplete.apply(this, arguments);
     };
 
     NextendSmartSliderMainAnimationSimple.prototype._mainAnimationNo = function (currentSlide, nextSlide) {
@@ -140,11 +161,11 @@
             opacity: 1
         }, totalDuration);
 
-        this.sliderElement.on('mainAnimationComplete.n2-simple-no', $.proxy(function () {
+        this.sliderElement.on('mainAnimationComplete.n2-simple-no', $.proxy(function (e, animation, currentSlideIndex, nextSlideIndex) {
             this.sliderElement.off('mainAnimationComplete.n2-simple-no');
-            currentSlide
+            this.slider.slides.eq(currentSlideIndex)
                 .css('opacity', '');
-            nextSlide
+            this.slider.slides.eq(nextSlideIndex)
                 .css('opacity', '');
         }, this));
     };
@@ -191,23 +212,23 @@
 
         nextSlide.css('opacity', 1);
 
-        this.sliderElement.on('mainAnimationComplete.n2-simple-fade', $.proxy(function () {
+        this.sliderElement.on('mainAnimationComplete.n2-simple-fade', $.proxy(function (e, animation, currentSlideIndex, nextSlideIndex) {
             this.sliderElement.off('mainAnimationComplete.n2-simple-fade');
-            currentSlide
+            this.slider.slides.eq(currentSlideIndex)
                 .css('zIndex', '')
                 .css('opacity', '');
-            nextSlide
+            this.slider.slides.eq(nextSlideIndex)
                 .css('opacity', '');
         }, this));
     };
 
-    NextendSmartSliderMainAnimationSimple.prototype._mainAnimationHorizontal = function (currentSlide, nextSlide, reversed) {
-        this.__mainAnimationDirection(currentSlide, nextSlide, 'horizontal', 1, reversed);
+    NextendSmartSliderMainAnimationSimple.prototype._mainAnimationHorizontal = function (currentSlide, nextSlide, reversed, currentSlideIndex, nextSlideIndex) {
+        this.__mainAnimationDirection(currentSlide, nextSlide, 'horizontal', 1, reversed, currentSlideIndex, nextSlideIndex);
     };
 
-    NextendSmartSliderMainAnimationSimple.prototype._mainAnimationVertical = function (currentSlide, nextSlide, reversed) {
+    NextendSmartSliderMainAnimationSimple.prototype._mainAnimationVertical = function (currentSlide, nextSlide, reversed, currentSlideIndex, nextSlideIndex) {
         this._showSlide(nextSlide);
-        this.__mainAnimationDirection(currentSlide, nextSlide, 'vertical', 1, reversed);
+        this.__mainAnimationDirection(currentSlide, nextSlide, 'vertical', 1, reversed, currentSlideIndex, nextSlideIndex);
     };
 
     NextendSmartSliderMainAnimationSimple.prototype._mainAnimationHorizontalParallax = function (currentSlide, nextSlide, reversed) {
@@ -219,7 +240,7 @@
         this.__mainAnimationDirection(currentSlide, nextSlide, 'vertical', this.parameters.parallax, reversed);
     };
 
-    NextendSmartSliderMainAnimationSimple.prototype.__mainAnimationDirection = function (currentSlide, nextSlide, direction, parallax, reversed) {
+    NextendSmartSliderMainAnimationSimple.prototype.__mainAnimationDirection = function (currentSlide, nextSlide, direction, parallax, reversed, currentSlideIndex, nextSlideIndex) {
         var property = '',
             propertyValue = 0,
             parallaxProperty = '',
@@ -312,13 +333,63 @@
 
         this.timeline.to(currentSlide.get(0), adjustedTiming.outDuration, outProperties, adjustedTiming.outDelay);
 
+        if (this.isTouch && this.isReverseAllowed && parallax == 1) {
+            var reverseSlideIndex = reversed ? currentSlideIndex + 1 : currentSlideIndex - 1;
+            if (reverseSlideIndex < 0) {
+                if (this.slider.parameters.carousel) {
+                    reverseSlideIndex = this.slider.slides.length - 1;
+                } else {
+                    reverseSlideIndex = currentSlideIndex;
+                }
+            } else if (reverseSlideIndex >= this.slider.slides.length) {
+                if (this.slider.parameters.carousel) {
+                    reverseSlideIndex = 0;
+                } else {
+                    reverseSlideIndex = currentSlideIndex;
+                }
+            }
+            this.reverseSlideIndex = reverseSlideIndex;
+            if (reverseSlideIndex != nextSlideIndex) {
 
-        this.sliderElement.on('mainAnimationComplete.n2-simple-fade', $.proxy(function () {
+                if (reverseSlideIndex != currentSlideIndex) {
+                    this.enableReverseMode();
+
+                    var reverseSlide = this.slider.slides.eq(reverseSlideIndex);
+                    if (direction == 'vertical') {
+                        this._showSlide(reverseSlide);
+                    }
+                    reverseSlide.css(property, propertyValue);
+                    var reversedInFrom = {},
+                        reversedInProperties = {
+                            ease: this.getEase()
+                        },
+                        reversedOutFrom = {},
+                        reversedOutProperties = {
+                            ease: this.getEase()
+                        };
+
+                    reversedInProperties[property] = 0;
+                    reversedInFrom[property] = -propertyValue;
+                    reversedOutProperties[property] = propertyValue
+                    reversedOutFrom[property] = 0;
+
+                    reverseSlide.trigger('mainAnimationStartIn', [this, currentSlideIndex, reverseSlideIndex, false]);
+                    this.reverseTimeline.paused(true);
+                    this.reverseTimeline.eventCallback('onComplete', this.onChangeToComplete, [currentSlideIndex, reverseSlideIndex, false], this);
+
+                    this.reverseTimeline.fromTo(reverseSlide.get(0), adjustedTiming.inDuration, reversedInFrom, reversedInProperties, adjustedTiming.inDelay);
+                    this.reverseTimeline.fromTo(currentSlide.get(0), adjustedTiming.inDuration, reversedOutFrom, reversedOutProperties, adjustedTiming.inDelay);
+                }
+            }
+        }
+
+
+        this.sliderElement.on('mainAnimationComplete.n2-simple-fade', $.proxy(function (e, animation, currentSlideIndex, nextSlideIndex) {
             this.sliderElement.off('mainAnimationComplete.n2-simple-fade');
-            nextSlide
+            this.slider.slides.eq(nextSlideIndex)
                 .css('zIndex', '')
                 .css(property, '');
-            currentSlide
+            this.slider.slides.eq(currentSlideIndex)
                 .css('zIndex', '')
                 .css(parallaxProperty, originalPropertyValue);
         }, this));

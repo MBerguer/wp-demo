@@ -119,6 +119,8 @@ class N2SmartSliderSlide
         $this->attributes['data-slide-duration'] = floatval($this->parameters->get('slide-duration', 0) / 1000);
         $this->attributes['data-id']             = $this->id;
 
+        $this->classes .= ' n2-ss-slide-' . $this->id;
+
         $this->sliderObject->features->makeSlide($this);
 
         $this->renderHtml();
@@ -150,6 +152,7 @@ class N2SmartSliderSlide
                     } else {
                         $this->containerAttributes['n2click'] = "window.location=this.getAttribute('data-href')";
                     }
+                    $this->containerAttributes['n2middleclick'] = "window.open(this.getAttribute('data-href'),'_blank');";
                 }
             }
             $this->containerAttributes['style'] .= 'cursor:pointer;';
@@ -347,6 +350,16 @@ class N2SmartSliderSlide
         return N2ImageHelper::fixed($this->fill($image));
     }
 
+    public function getThumbnailTypeHTML() {
+        $type = $this->parameters->get('thumbnailType', 'default');
+
+        if ($type == 'default') {
+            return '';
+        }
+
+        return '<img class="n2-ss-thumbnail-type n2-ow" src="' . N2ImageHelperAbstract::SVGToBase64('$ss$/images/thumbnail-types/' . $type . '.svg') . '"/>';
+    }
+
     public function getRow() {
         $this->fillParameters();
         return array(
@@ -466,7 +479,7 @@ class N2SmartSliderSlideHelper
         "backgroundImageOpacity" => 100,
         "backgroundAlt"          => "",
         "backgroundTitle"        => "",
-        "backgroundMode"         => "fill",
+        "backgroundMode"         => "default",
         "backgroundVideoMp4"     => "",
         "backgroundVideoWebm"    => "",
         "backgroundVideoOgg"     => "",

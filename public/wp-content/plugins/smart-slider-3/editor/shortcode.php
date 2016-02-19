@@ -96,12 +96,14 @@ class N2SSShortcodeInsert
                     show();
                 };
 
-                QTags.addButton('smart-slider-3', 'Smart Slider', function () {
-                    callback = function (id) {
-                        QTags.insertContent('<div>[smartslider3 slider=' + id + ']</div>');
-                    };
-                    show();
-                });
+                if (typeof QTags !== 'undefined') {
+                    QTags.addButton('smart-slider-3', 'Smart Slider', function () {
+                        callback = function (id) {
+                            QTags.insertContent('<div>[smartslider3 slider=' + id + ']</div>');
+                        };
+                        show();
+                    });
+                }
             })();
         </script>
         <style type="text/css">

@@ -80,9 +80,9 @@ class N2SSPluginItemText extends N2SSPluginItemAbstract
 
 
         $html          = '';
-        $content       = str_replace('<p>', '<p class="' . $font . ' ' . $style . '">', $this->wpautop(self::closeTags($slide->fill($data->get('content', '')))));
-        $contentTablet = str_replace('<p>', '<p class="' . $font . ' ' . $style . '">', $this->wpautop(self::closeTags($slide->fill($data->get('contenttablet', '')))));
-        $contentMobile = str_replace('<p>', '<p class="' . $font . ' ' . $style . '">', $this->wpautop(self::closeTags($slide->fill($data->get('contentmobile', '')))));
+        $content       = str_replace('<p>', '<p class="' . $font . ' ' . $style . ' n2-ow">', $this->wpautop(self::closeTags($slide->fill($data->get('content', '')))));
+        $contentTablet = str_replace('<p>', '<p class="' . $font . ' ' . $style . ' n2-ow">', $this->wpautop(self::closeTags($slide->fill($data->get('contenttablet', '')))));
+        $contentMobile = str_replace('<p>', '<p class="' . $font . ' ' . $style . ' n2-ow">', $this->wpautop(self::closeTags($slide->fill($data->get('contentmobile', '')))));
         $class         = '';
 
         if ($contentMobile == '') {

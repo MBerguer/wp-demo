@@ -186,7 +186,7 @@ class N2SmartSliderFeatureResponsive
                 $minimumFontSize['tabletLandscape'] = intval($slider->params->get('tablet-landscape-minimum-font-size', 4));
             }
         } else {
-            $this->tabletLandscapeScreenWidth = $this->tabletPortraitScreenWidth;
+            $this->tabletLandscapeScreenWidth  = $this->tabletPortraitScreenWidth;
             $ratioModifiers['tabletLandscape'] = $ratioModifiers['tabletPortrait'];
         }
 
@@ -242,7 +242,7 @@ class N2SmartSliderFeatureResponsive
                 $minimumFontSize['mobileLandscape'] = intval($slider->params->get('mobile-landscape-minimum-font-size', 4));
             }
         } else {
-            $this->mobileLandscapeScreenWidth = $this->mobilePortraitScreenWidth;
+            $this->mobileLandscapeScreenWidth  = $this->mobilePortraitScreenWidth;
             $ratioModifiers['mobileLandscape'] = $ratioModifiers['mobilePortrait'];
         }
         $this->modes                  = $modes;
@@ -388,9 +388,9 @@ class N2SmartSliderFeatureResponsive
 
 
         $properties['responsive'] = array(
-            'desktop'                          => $this->desktop,
-            'tablet'                           => $this->tablet,
-            'mobile'                           => $this->mobile,
+            'desktop' => $this->desktop,
+            'tablet'  => $this->tablet,
+            'mobile'  => $this->mobile,
 
             'onResizeEnabled'                  => $this->onResizeEnabled,
             'type'                             => $this->type,
@@ -408,22 +408,25 @@ class N2SmartSliderFeatureResponsive
             'forceFull'                        => $this->forceFull,
             'verticalOffsetSelectors'          => $this->verticalOffsetSelectors,
 
-            'focusUser'                        => $this->focusUser,
-            'focusAutoplay'                    => $this->focusAutoplay,
+            'focusUser'     => $this->focusUser,
+            'focusAutoplay' => $this->focusAutoplay,
 
-            'deviceModes'                      => $this->modes,
-            'normalizedDeviceModes'            => $normalizedDeviceModes,
-            'verticalRatioModifiers'           => $this->verticalRatioModifiers,
-            'minimumFontSizes'                 => $this->minimumFontSizes,
-            'ratioToDevice'                    => $this->sliderRatioToDevice,
-            'sliderWidthToDevice'              => $this->sliderWidthToDevice,
+            'deviceModes'            => $this->modes,
+            'normalizedDeviceModes'  => $normalizedDeviceModes,
+            'verticalRatioModifiers' => $this->verticalRatioModifiers,
+            'minimumFontSizes'       => $this->minimumFontSizes,
+            'ratioToDevice'          => $this->sliderRatioToDevice,
+            'sliderWidthToDevice'    => $this->sliderWidthToDevice,
 
-            'basedOn'                          => $this->basedOn,
-            'tabletPortraitScreenWidth'        => $this->tabletPortraitScreenWidth,
-            'mobilePortraitScreenWidth'        => $this->mobilePortraitScreenWidth,
-            'tabletLandscapeScreenWidth'       => $this->tabletLandscapeScreenWidth,
-            'mobileLandscapeScreenWidth'       => $this->mobileLandscapeScreenWidth,
-            'orientationMode'                  => $this->orientationMode
+            'basedOn'                    => $this->basedOn,
+            'tabletPortraitScreenWidth'  => $this->tabletPortraitScreenWidth,
+            'mobilePortraitScreenWidth'  => $this->mobilePortraitScreenWidth,
+            'tabletLandscapeScreenWidth' => $this->tabletLandscapeScreenWidth,
+            'mobileLandscapeScreenWidth' => $this->mobileLandscapeScreenWidth,
+            'orientationMode'            => $this->orientationMode,
+
+            'scrollFix' => intval($this->slider->params->get('scroll-fix', 0)),
+            'overflowHiddenPage' => intval($this->slider->params->get('overflow-hidden-page', 0))
         );
     }
 
