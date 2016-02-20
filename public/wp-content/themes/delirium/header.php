@@ -21,7 +21,7 @@
 
 			<div class="inner-wrap">
 
-				<div id="logo" style="padding-left: 30%;  padding-right: 30%;" >
+				<div id="logo" style="/*padding-left: 30%;  padding-right: 30%;*/" >
 					<?php if (!option::get('misc_logo_path')) { echo "<h1>"; } ?>
 
 					<a href="<?php echo home_url(); ?>" title="<?php bloginfo('description'); ?>">
